@@ -1,0 +1,866 @@
+<title>スライド組み立て仕様書</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700&family=Noto+Sans+JP:wght@400;500&family=JetBrains+Mono:wght@400;700&display=swap">
+<style>
+  :root {
+    --ground: #F6F7F9;
+    --surface: #FFFFFF;
+    --surface-sunk: #EEF0F3;
+    --ink: #1A1F26;
+    --ink-soft: #55606D;
+    --ink-faint: #808B99;
+    --rule: #DCE1E7;
+    --rule-strong: #C3CBD4;
+    --mark: #B23A2E;
+    --mark-soft: #FBEDEB;
+    --anchor: #2E4057;
+    --slot: #7A8899;
+    --slot-bg: #EDF0F4;
+    --shadow: 0 1px 2px rgba(26, 31, 38, .06), 0 8px 24px rgba(26, 31, 38, .05);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #131619;
+      --surface: #1B1F24;
+      --surface-sunk: #23282E;
+      --ink: #E7EAEE;
+      --ink-soft: #A4AEBA;
+      --ink-faint: #77828F;
+      --rule: #2D343B;
+      --rule-strong: #3D454E;
+      --mark: #E4796A;
+      --mark-soft: #2E211F;
+      --anchor: #9FB3C8;
+      --slot: #8794A3;
+      --slot-bg: #212630;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px rgba(0, 0, 0, .3);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #131619;
+    --surface: #1B1F24;
+    --surface-sunk: #23282E;
+    --ink: #E7EAEE;
+    --ink-soft: #A4AEBA;
+    --ink-faint: #77828F;
+    --rule: #2D343B;
+    --rule-strong: #3D454E;
+    --mark: #E4796A;
+    --mark-soft: #2E211F;
+    --anchor: #9FB3C8;
+    --slot: #8794A3;
+    --slot-bg: #212630;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px rgba(0, 0, 0, .3);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: "Noto Sans JP", system-ui, -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+    font-size: 15px;
+    line-height: 1.75;
+    margin: 0;
+    padding: 0 20px 96px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 1040px; margin: 0 auto; }
+
+  h1, h2, h3, h4 {
+    font-family: "Zen Kaku Gothic New", "Noto Sans JP", system-ui, sans-serif;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  code, .mono { font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+  /* ---------- header ---------- */
+
+  header.page {
+    padding: 64px 0 32px;
+    border-bottom: 2px solid var(--ink);
+  }
+  .eyebrow {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 14px;
+  }
+  header.page h1 {
+    font-size: clamp(28px, 4.4vw, 42px);
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -.01em;
+  }
+  header.page p.lede {
+    color: var(--ink-soft);
+    max-width: 60ch;
+    margin: 14px 0 0;
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 24px;
+  }
+  .chip {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 5px 11px;
+    color: var(--ink-soft);
+  }
+  .chip b { color: var(--ink); font-weight: 700; }
+
+  /* ---------- callout ---------- */
+
+  .callout {
+    background: var(--mark-soft);
+    border-left: 3px solid var(--mark);
+    padding: 18px 22px;
+    margin: 36px 0 0;
+  }
+  .callout h4 { font-size: 15px; color: var(--mark); margin-bottom: 6px; }
+  .callout p { margin: 0; color: var(--ink-soft); }
+  .callout p + p { margin-top: 8px; }
+
+  /* ---------- section titles ---------- */
+
+  h2.sec {
+    font-size: 13px;
+    font-family: "JetBrains Mono", monospace;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 400;
+    margin: 72px 0 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  /* ---------- slide card ---------- */
+
+  .deck { display: flex; flex-direction: column; gap: 20px; }
+
+  article.slide {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  article.slide.peak { border-color: var(--mark); }
+
+  .slide-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    padding: 16px 22px;
+    border-bottom: 1px solid var(--rule);
+    background: var(--surface-sunk);
+  }
+  .num {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--anchor);
+  }
+  .slide-head h3 {
+    font-size: 17px;
+    font-weight: 700;
+    flex: 1;
+  }
+  .peak-tag {
+    font-size: 11px;
+    font-family: "JetBrains Mono", monospace;
+    letter-spacing: .08em;
+    color: var(--mark);
+    border: 1px solid var(--mark);
+    border-radius: 2px;
+    padding: 2px 7px;
+  }
+  .dur {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-faint);
+  }
+
+  .slide-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 0;
+  }
+  @media (max-width: 820px) {
+    .slide-body { grid-template-columns: minmax(0, 1fr); }
+    .col-left { border-right: none !important; border-bottom: 1px solid var(--rule); }
+  }
+  .col-left {
+    padding: 22px;
+    border-right: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .col-right {
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  h4.lbl {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 400;
+    margin-bottom: 8px;
+  }
+
+  /* slide text preview */
+  .screen {
+    background: var(--ground);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--anchor);
+    padding: 16px 18px;
+    font-family: "Zen Kaku Gothic New", sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.65;
+  }
+  .screen .big { font-size: 20px; font-weight: 700; display: block; }
+  .screen .sub { color: var(--ink-soft); font-size: 13px; font-weight: 400; display: block; }
+  .screen .cmd {
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+    font-size: 17px;
+    display: block;
+  }
+  .screen .redline { color: var(--mark); font-weight: 700; }
+  .screen ul { margin: 6px 0 0; padding-left: 1.1em; font-size: 14px; font-weight: 400; }
+  .screen hr { border: 0; border-top: 1px solid var(--rule); margin: 12px 0; }
+
+  /* image slot */
+  .slot {
+    border: 1.5px dashed var(--rule-strong);
+    background: var(--slot-bg);
+    border-radius: 3px;
+    padding: 14px 16px;
+  }
+  .slot + .slot { margin-top: 10px; }
+  .slot .fn {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--ink);
+    word-break: break-all;
+    display: block;
+  }
+  .slot .place {
+    font-size: 12.5px;
+    color: var(--slot);
+    margin-top: 5px;
+    display: block;
+  }
+  .slot .place b { color: var(--mark); font-weight: 500; }
+  .noimg {
+    font-size: 13px;
+    color: var(--ink-faint);
+    border: 1px dashed var(--rule);
+    border-radius: 3px;
+    padding: 12px 16px;
+    text-align: center;
+  }
+
+  .talk {
+    border-left: 2px solid var(--rule-strong);
+    padding-left: 14px;
+    color: var(--ink);
+  }
+  .talk p { margin: 0; }
+  .talk p + p { margin-top: 10px; }
+  .talk .beat { color: var(--ink-faint); font-size: 13px; }
+
+  .why { font-size: 13.5px; color: var(--ink-soft); margin: 0; }
+  .why strong { color: var(--ink); font-weight: 500; }
+
+  /* ---------- table ---------- */
+
+  .scroll { overflow-x: auto; }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 14px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+  }
+  th, td {
+    text-align: left;
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--rule);
+  }
+  th {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 400;
+    background: var(--surface-sunk);
+  }
+  td.n { font-family: "JetBrains Mono", monospace; font-variant-numeric: tabular-nums; }
+  tr.peak-row td { background: var(--mark-soft); font-weight: 500; }
+  tr:last-child td { border-bottom: 0; }
+  tr.total td { border-top: 2px solid var(--ink); font-weight: 700; }
+
+  /* ---------- lists ---------- */
+
+  ol.trim, ul.check {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 18px 22px 18px 42px;
+    margin: 0;
+  }
+  ul.check { list-style: none; padding-left: 22px; }
+  ul.check li { padding-left: 26px; position: relative; }
+  ul.check li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 13px;
+    height: 13px;
+    border: 1.5px solid var(--rule-strong);
+    border-radius: 2px;
+  }
+  ol.trim li, ul.check li { margin-bottom: 8px; }
+  ol.trim li:last-child, ul.check li:last-child { margin-bottom: 0; }
+
+  code:not(.screen code) {
+    background: var(--surface-sunk);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 1px 5px;
+    font-size: .88em;
+  }
+
+  footer.page {
+    margin-top: 72px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    color: var(--ink-faint);
+    font-size: 13px;
+  }
+</style>
+
+<div class="wrap">
+
+<header class="page">
+  <div class="eyebrow">Lightning Talk · 組み立て仕様書</div>
+  <h1>レビューを出す前に、1回だけ通す</h1>
+  <p class="lede">Claude Code の <code>/code-review</code> を紹介する3〜5分のLT。この仕様書のとおりに Keynote で13枚作ると、撮影済みのキャプチャ12枚がすべて収まります。</p>
+  <div class="meta">
+    <span class="chip">スライド <b>13枚</b></span>
+    <span class="chip">キャプチャ <b>12枚</b></span>
+    <span class="chip">所要 <b>4分45秒</b></span>
+    <span class="chip">聞き手 <b>エンジニア中心</b></span>
+  </div>
+</header>
+
+<div class="callout">
+  <h4>作りはじめる前に：STEP5_1 はトリミングしてください</h4>
+  <p>この画面の上部に <code>/model</code>（Sonnet 5）と <code>/effort medium</code> の実行履歴が写り込んでいます。これは <strong>Claude Code 全体の設定</strong>で、<code>/code-review high</code> の「厳しさ」とは別の機能です。</p>
+  <p>そのまま出すと「さっき設定した effort と同じもの？」という質問が出ます。<b>コマンド候補が出ている下半分だけ</b>を切り出して使ってください。</p>
+</div>
+
+<h2 class="sec">スライド 01 — 13</h2>
+
+<div class="deck">
+
+  <!-- 01 -->
+  <article class="slide">
+    <div class="slide-head"><span class="num">01</span><h3>タイトル</h3><span class="dur">12秒</span></div>
+    <div class="slide-body">
+      <div class="col-left">
+        <div>
+          <h4 class="lbl">スライドに出す文字</h4>
+          <div class="screen">
+            <span class="big">レビューを出す前に、1回だけ通す</span>
+            <span class="sub">Claude Code <code>/code-review</code></span>
+            <span class="sub">お名前 / 日付</span>
+          </div>
+        </div>
+        <div>
+          <h4 class="lbl">貼る画像</h4>
+          <div class="noimg">画像なし（文字だけ）</div>
+        </div>
+      </div>
+      <div class="col-right">
+        <div>
+          <h4 class="lbl">話すこと</h4>
+          <div class="talk"><p>Claude Code の機能をひとつだけ紹介します。コードレビューです。4分後には、今日から打てるコマンドを1つ持って帰れます。</p></div>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 02 -->
+  <article class="slide">
+    <div class="slide-head"><span class="num">02</span><h3>つかみ</h3><span class="dur">18秒</span></div>
+    <div class="slide-body">
+      <div class="col-left">
+        <div>
+          <h4 class="lbl">スライドに出す文字</h4>
+          <div class="screen"><span class="big">レビュー依頼、少し身構えませんか</span></div>
+        </div>
+        <div>
+          <h4 class="lbl">貼る画像</h4>
+          <div class="noimg">画像なし（文字だけ）</div>
+        </div>
+      </div>
+      <div class="col-right">
+        <div>
+          <h4 class="lbl">話すこと</h4>
+          <div class="talk"><p>レビューを出すとき、少し身構えませんか。初歩的なミスでレビュアーの時間を取るのが申し訳ない、とか。あと単純に、レビュー待ちで手が止まるのがもったいない。人に出す前に自分で一回潰せたらいいなと思って、実際に試してみた話をします。</p></div>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 03 -->
+  <article class="slide">
+    <div class="slide-head"><span class="num">03</span><h3>結論</h3><span class="dur">15秒</span></div>
+    <div class="slide-body">
+      <div class="col-left">
+        <div>
+          <h4 class="lbl">スライドに出す文字</h4>
+          <div class="screen">
+            <span class="cmd">/code-review</span>
+            <hr>
+            <span class="sub">引数なし。いまの差分を自動で拾う</span>
+          </div>
+        </div>
+        <div>
+          <h4 class="lbl">貼る画像</h4>
+          <div class="noimg">画像なし（コマンドを大きく1つだけ）</div>
+        </div>
+      </div>
+      <div class="col-right">
+        <div>
+          <h4 class="lbl">話すこと</h4>
+          <div class="talk"><p>結論はこれだけです。Claude Code を起動して <code>/code-review</code>。引数もファイル名も要りません。いまのブランチの差分を自動で見つけてレビューします。実際にやってみたので、画面を見てください。</p></div>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 04 -->
+  <article class="slide">
+    <div class="slide-head"><span class="num">04</span><h3>題材：ごく普通のPR</h3><span class="dur">22秒</span></div>
+    <div class="slide-body">
+      <div class="col-left">
+        <div>
+          <h4 class="lbl">スライドに出す文字</h4>
+          <div class="screen">
+            <span class="big">Go の収支集計CLI</span>
+            <span class="sub">3ファイル / 130行 &nbsp;·&nbsp; build も vet も無警告</span>
+          </div>
+        </div>
+        <div>
+          <h4 class="lbl">貼る画像（2枚を上下に）</h4>
+          <div class="slot">
+            <span class="fn">STEP1_差分確認.png</span>
+            <span class="place">配置：<b>上半分</b>。差分の大きさを見せる</span>
+          </div>
+          <div class="slot">
+            <span class="fn">STEP2_ビルド&amp;vet確認.png</span>
+            <span class="place">配置：<b>下半分</b>。<code>OK</code> の行が読めれば十分なので小さくてよい</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-right">
+        <div>
+          <h4 class="lbl">話すこと</h4>
+          <div class="talk"><p>題材は Go の小さな CLI です。CSVの台帳を読んで、月ごとの収支を集計するだけ。差分は3ファイル130行、よくあるサイズのPRだと思います。</p><p>build も vet も無警告で通ります。<strong>静的解析では何も出ません。</strong></p></div>
+        </div>
+        <div>
+          <h4 class="lbl">この2枚を出す理由</h4>
+          <p class="why">「ツールが見つけたのは、どうせ lint で出るやつでしょ」という<strong>先回りの反論を先に潰す</strong>ため。ここで潰しておくと、あとの指摘がすべて効きます。</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 05 -->
+  <article class="slide">
+    <div class="slide-head"><span class="num">05</span><h3>実装を見せる</h3><span class="dur">20秒</span></div>
+    <div class="slide-body">
+      <div class="col-left">
+        <div>
+          <h4 class="lbl">スライドに出す文字</h4>
+          <div class="screen"><span class="big">集計しているのは、これだけ</span></div>
+        </div>
+        <div>
+          <h4 class="lbl">貼る画像</h4>
+          <div class="slot">
+            <span class="fn">STEP3_実装確認.png</span>
+            <span class="place">配置：<b>スライドいっぱい</b>。文字が小さいので、上下の余白（プロンプト行）は切り落とす</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-right">
+        <div>
+          <h4 class="lbl">話すこと</h4>
+          <div class="talk"><p>1行ずつ見て、売上なら売上に、それ以外は支出に足していく。最後に売上マイナス支出で粗利を出す。</p><p>ごく普通のコードに見えると思います。実際、私もそう思っていました。</p></div>
+        </div>
+        <div>
+          <h4 class="lbl">この画像を出す理由</h4>
+          <p class="why">聞き手にバグを探させる必要は<strong>ありません</strong>。次のスライドで「実は間違っている」と明かすための伏線なので、さらっと流すのが正解です。読み上げも上の2文だけで十分。</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 06 -->
+  <article class="slide peak">
+    <div class="slide-head"><span class="num">06</span><h3>動かす</h3><span class="peak-tag">空気が変わる</span><span class="dur">35秒</span></div>
+    <div class="slide-body">
+      <div class="col-left">
+        <div>
+          <h4 class="lbl">スライドに出す文字</h4>
+          <div class="screen">
+            <span class="big">エラーなし。終了コード 0</span>
+            <hr>
+            <span class="redline">粗利 36,800円</span>
+            <span class="sub">正しくは 8,000円</span>
+          </div>
+        </div>
+        <div>
+          <h4 class="lbl">貼る画像</h4>
+          <div class="slot">
+            <span class="fn">STEP4_go run確認.png</span>
+            <span class="place">配置：<b>中央大きく</b>。Keynote の図形で <b>「36800」の行に赤い枠線</b>を必ず追加</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-right">
+        <div>
+          <h4 class="lbl">話すこと</h4>
+          <div class="talk"><p>動かします。エラーは出ません。終了コードも 0 です。</p><p class="beat">【ここで一拍おく】</p><p>でも間違っています。正しい粗利は 8,000円。表示は 36,800円。4倍以上ずれています。支出をマイナスで持っているのに、さらに引き算していたので符号が反転していました。</p><p>こういうのが一番こわいと思っていて、<strong>落ちないので誰も気づかない。</strong></p></div>
+        </div>
+        <div>
+          <h4 class="lbl">この画像を出す理由</h4>
+          <p class="why">LT全体で<strong>いちばん重要な1枚</strong>。「動いてしまうバグ」を一目で見せられます。赤枠がないと数字が埋もれるので、装飾ではなく必須です。</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 07 -->
+  <article class="slide">
+    <div class="slide-head"><span class="num">07</span><h3>コマンドを打つ</h3><span class="dur">18秒</span></div>
+    <div class="slide-body">
+      <div class="col-left">
+        <div>
+          <h4 class="lbl">スライドに出す文字</h4>
+          <div class="screen">
+            <span class="cmd">/code-review</span>
+            <span class="sub">待っている間、別の作業を頼める</span>
+          </div>
+        </div>
+        <div>
+          <h4 class="lbl">貼る画像（2枚を左右に）</h4>
+          <div class="slot">
+            <span class="fn">STEP5_1_:code-review実行前_medium.png</span>
+            <span class="place">配置：<b>左</b>。<b>上部の /model・/effort の履歴は必ずトリミング</b>し、コマンド候補が出ている部分だけを使う</span>
+          </div>
+          <div class="slot">
+            <span class="fn">STEP5_2_:code-review実行中_medium.png</span>
+            <span class="place">配置：<b>右</b>。裏で動いている様子</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-right">
+        <div>
+          <h4 class="lbl">話すこと</h4>
+          <div class="talk"><p>ここでコマンドを打ちます。スラッシュを打つと候補が出るので選ぶだけ。このサイズなら1〜2分で返ってきます。</p><p>別プロセスで走るので、待っている間も別の作業を頼めます。</p></div>
+        </div>
+        <div>
+          <h4 class="lbl">この2枚を出す理由</h4>
+          <p class="why">左は「<strong>本当にコマンド1つ</strong>」の証拠。右は「裏で何かが動いている」実感を出すため。サブエージェントの仕組みの説明には<strong>踏み込まないでください</strong> — 4分の枠では本題が薄まります。上の一言で止めるのが正解です。</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 08 -->
+  <article class="slide">
+    <div class="slide-head"><span class="num">08</span><h3>結果：5件</h3><span class="dur">28秒</span></div>
+    <div class="slide-body">
+      <div class="col-left">
+        <div>
+          <h4 class="lbl">スライドに出す文字</h4>
+          <div class="screen">
+            <span class="big">指摘 5件</span>
+            <span class="sub">全件、実際にビルドして動かした上での指摘</span>
+          </div>
+        </div>
+        <div>
+          <h4 class="lbl">貼る画像（主 + 従）</h4>
+          <div class="slot">
+            <span class="fn">STEP6_2_:code-review実行結果_メイン_medium.png</span>
+            <span class="place">配置：<b>主役。大きく中央</b>。まとまった指摘一覧はこちら</span>
+          </div>
+          <div class="slot">
+            <span class="fn">STEP6_1_:code-review実行結果_サブエージェント_medium.png</span>
+            <span class="place">配置：<b>隅に小さく</b>（右下など）。読めなくてよい</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-right">
+        <div>
+          <h4 class="lbl">話すこと</h4>
+          <div class="talk"><p>5件出ました。細かく読まなくて大丈夫です。さっきの符号バグはもちろん入っています。ファイル名と行番号つきで、「実際に動かすとこう出る、正しくはこう」まで書いてあります。</p><p>ここまでは、正直まあそうだろうなと思っていました。驚いたのはこの次です。</p></div>
+        </div>
+        <div>
+          <h4 class="lbl">2枚に分ける理由</h4>
+          <p class="why">メイン画面が<strong>結論</strong>、サブエージェント画面が<strong>作業量の証拠</strong>です。小さく添えるだけで「裏でこれだけ調べている」が伝わります。説明は不要。</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 09 -->
+  <article class="slide">
+    <div class="slide-head"><span class="num">09</span><h3>厳しさを上げる</h3><span class="dur">10秒</span></div>
+    <div class="slide-body">
+      <div class="col-left">
+        <div>
+          <h4 class="lbl">スライドに出す文字</h4>
+          <div class="screen">
+            <span class="cmd">/code-review high</span>
+            <span class="sub">low / medium / high / max</span>
+          </div>
+        </div>
+        <div>
+          <h4 class="lbl">貼る画像</h4>
+          <div class="slot">
+            <span class="fn">STEP7_1_:code-review実行前_high.png</span>
+            <span class="place">配置：<b>中央</b>。入力した行が読めればよい</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-right">
+        <div>
+          <h4 class="lbl">話すこと</h4>
+          <div class="talk"><p>どれくらい厳しく見るかを指定できます。同じ差分に、今度は high で。</p></div>
+        </div>
+        <div>
+          <h4 class="lbl">この画像を出す理由</h4>
+          <p class="why">次の「8件」への<strong>つなぎ</strong>。ここは速く抜けてください。10秒で十分です。</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 10 -->
+  <article class="slide">
+    <div class="slide-head"><span class="num">10</span><h3>結果：8件</h3><span class="dur">25秒</span></div>
+    <div class="slide-body">
+      <div class="col-left">
+        <div>
+          <h4 class="lbl">スライドに出す文字</h4>
+          <div class="screen">
+            <span class="big">指摘 8件</span>
+            <span class="sub">medium の5件 <span class="redline">＋3件</span></span>
+          </div>
+        </div>
+        <div>
+          <h4 class="lbl">貼る画像</h4>
+          <div class="slot">
+            <span class="fn">STEP7_4_:code-review実行結果_メイン_high.png</span>
+            <span class="place">配置：<b>大きく中央</b>。件数が伝わればよい</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-right">
+        <div>
+          <h4 class="lbl">話すこと</h4>
+          <div class="talk"><p>8件に増えました。3件増えたわけですが、その増えた中にこれがありました。</p></div>
+        </div>
+        <div>
+          <h4 class="lbl">この画像を出す理由</h4>
+          <p class="why">「増えた」という<strong>事実だけ</strong>を見せる枚です。中身は次のスライドで拡大するので、ここでは読ませません。</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 11 -->
+  <article class="slide peak">
+    <div class="slide-head"><span class="num">11</span><h3>README のルールに違反している</h3><span class="peak-tag">山場</span><span class="dur">45秒</span></div>
+    <div class="slide-body">
+      <div class="col-left">
+        <div>
+          <h4 class="lbl">スライドに出す文字</h4>
+          <div class="screen">
+            <span class="big">「README のルールに違反している」</span>
+            <hr>
+            <span class="sub">粗利 = 売上 − 原価</span>
+            <span class="sub">利益分配は原価ではなく、粗利から払う</span>
+          </div>
+        </div>
+        <div>
+          <h4 class="lbl">貼る画像（2枚を上下に）</h4>
+          <div class="slot">
+            <span class="fn">STEP7_2_:code-review実行結果_サブエージェント_high.png</span>
+            <span class="place">配置：<b>該当の指摘だけを切り出して、大きく</b>。このLTで<b>唯一、文字を読ませる画像</b></span>
+          </div>
+          <div class="slot">
+            <span class="fn">STEP7_3_:code-review実行結果2_サブエージェント_high.png</span>
+            <span class="place">配置：<b>下に小さく</b>、または総括の一文だけを切り出して添える</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-right">
+        <div>
+          <h4 class="lbl">話すこと</h4>
+          <div class="talk"><p>このリポジトリの README には、会計上の決めごとが書いてあります。「粗利は売上マイナス原価」「利益分配は原価ではなく、粗利の中から払う」。</p><p class="beat">【ここで一拍おく】</p><p><strong>コードではなく、README です。</strong></p><p>実装はこれを守っておらず、分配を原価として引いていました。Claude はその README を読んだ上で、「この2つは README に書かれたルールへの違反だ」と指摘してきました。</p><p>文法チェックでも、よくあるバグパターンの検出でもないですよね。リポジトリの中の決めごとを読んで、それと突き合わせている。ここまでやるとは思っていませんでした。</p></div>
+        </div>
+        <div>
+          <h4 class="lbl">この画像を出す理由</h4>
+          <p class="why">LTの<strong>結論そのもの</strong>。ここだけは投影して、会場の一番うしろから文字が読めるか必ず確認してください。読めないなら、指摘部分を切り出して拡大するか、テキストで打ち直します。</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 12 -->
+  <article class="slide">
+    <div class="slide-head"><span class="num">12</span><h3>使い方</h3><span class="dur">22秒</span></div>
+    <div class="slide-body">
+      <div class="col-left">
+        <div>
+          <h4 class="lbl">スライドに出す文字</h4>
+          <div class="screen">
+            <ul>
+              <li><code>/code-review</code> — 引数なしでOK</li>
+              <li><code>/code-review high</code> — 厳しさ low〜max</li>
+              <li><code>/code-review --fix</code> — その場で直す</li>
+              <li><code>/code-review --comment</code> — PRに行コメント</li>
+            </ul>
+          </div>
+        </div>
+        <div>
+          <h4 class="lbl">貼る画像</h4>
+          <div class="noimg">画像なし（文字だけ・4行）</div>
+        </div>
+      </div>
+      <div class="col-right">
+        <div>
+          <h4 class="lbl">話すこと</h4>
+          <div class="talk"><p>使い方です。基本は引数なしでいいです。物足りなければ high や max。今回は medium から high で3件増えました。<code>--fix</code> を付けると指摘するだけでなくその場で直します。<code>--comment</code> を付けると GitHub のPRに行ごとのコメントとして投稿してくれます。</p><p>ちなみに今回は8件出ましたが、<strong>毎回この精度が出るとは限りません。</strong>差分は自分でも見ます。</p></div>
+        </div>
+        <div>
+          <h4 class="lbl">最後の一言を入れる理由</h4>
+          <p class="why">質疑で<strong>ほぼ確実に聞かれます</strong>。先に自分から言っておくと、誠実に見えるうえに質疑が短くなります。</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 13 -->
+  <article class="slide">
+    <div class="slide-head"><span class="num">13</span><h3>まとめ</h3><span class="dur">15秒</span></div>
+    <div class="slide-body">
+      <div class="col-left">
+        <div>
+          <h4 class="lbl">スライドに出す文字</h4>
+          <div class="screen">
+            <span class="big">人に出す前に、1回だけ。</span>
+            <hr>
+            <span class="cmd">/code-review</span>
+          </div>
+        </div>
+        <div>
+          <h4 class="lbl">貼る画像</h4>
+          <div class="noimg">画像なし（01と対にする）</div>
+        </div>
+      </div>
+      <div class="col-right">
+        <div>
+          <h4 class="lbl">話すこと</h4>
+          <div class="talk"><p>まとめます。人にレビューを出す前に1回だけ通してみてください。恥ずかしい指摘を人に見せずに済みますし、レビュアーの負担も減ります。打つコマンドは1つだけです。以上です、ありがとうございました。</p></div>
+        </div>
+      </div>
+    </div>
+  </article>
+
+</div>
+
+<h2 class="sec">時間配分</h2>
+
+<div class="scroll">
+<table>
+  <thead><tr><th>#</th><th>内容</th><th>秒</th><th>累計</th></tr></thead>
+  <tbody>
+    <tr><td class="n">01</td><td>タイトル</td><td class="n">12</td><td class="n">0:12</td></tr>
+    <tr><td class="n">02</td><td>つかみ</td><td class="n">18</td><td class="n">0:30</td></tr>
+    <tr><td class="n">03</td><td>結論</td><td class="n">15</td><td class="n">0:45</td></tr>
+    <tr><td class="n">04</td><td>題材</td><td class="n">22</td><td class="n">1:07</td></tr>
+    <tr><td class="n">05</td><td>実装</td><td class="n">20</td><td class="n">1:27</td></tr>
+    <tr class="peak-row"><td class="n">06</td><td>動かす</td><td class="n">35</td><td class="n">2:02</td></tr>
+    <tr><td class="n">07</td><td>コマンドを打つ</td><td class="n">18</td><td class="n">2:20</td></tr>
+    <tr><td class="n">08</td><td>結果 5件</td><td class="n">28</td><td class="n">2:48</td></tr>
+    <tr><td class="n">09</td><td>厳しさを上げる</td><td class="n">10</td><td class="n">2:58</td></tr>
+    <tr><td class="n">10</td><td>結果 8件</td><td class="n">25</td><td class="n">3:23</td></tr>
+    <tr class="peak-row"><td class="n">11</td><td>山場</td><td class="n">45</td><td class="n">4:08</td></tr>
+    <tr><td class="n">12</td><td>使い方</td><td class="n">22</td><td class="n">4:30</td></tr>
+    <tr class="total"><td class="n">13</td><td>まとめ</td><td class="n">15</td><td class="n">4:45</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2 class="sec">4分に収めたいとき — 削る順番</h2>
+
+<ol class="trim">
+  <li><strong>09（厳しさを上げる）を10に統合</strong> → −10秒。10のスライドに <code>/code-review high</code> と併記すれば足ります</li>
+  <li><strong>07 の右側（実行中の画像）を落とす</strong> → −8秒。左のコマンド候補だけで通じます</li>
+  <li><strong>12 の使い方を <code>--fix</code> の1行だけに</strong> → −12秒</li>
+  <li><strong>02 のつかみを1文に</strong> → −8秒</li>
+  <li><strong>04 の説明を「130行のPR。buildもvetも通る」の一言で流す</strong> → −8秒</li>
+</ol>
+
+<div class="callout" style="margin-top:20px">
+  <h4>06 と 11 は削らない</h4>
+  <p>「動いてしまうバグ」と「README のルール違反」。この2枚がこのLTの中身です。ほかを全部削ってでも、この2枚には時間を残してください。</p>
+</div>
+
+<h2 class="sec">発表前チェックリスト</h2>
+
+<ul class="check">
+  <li>キャプチャ12枚を全部貼った</li>
+  <li><strong>STEP5_1 の上部（/model・/effort の履歴）をトリミングした</strong></li>
+  <li>06 の「36800」に赤枠を付けた</li>
+  <li>実際に投影して、<strong>会場の一番うしろから 11 の文字が読める</strong>ことを確認した</li>
+  <li>通しで1回声に出して読み、4分30秒前後に収まった</li>
+  <li>キャプチャに他の作業画面・APIキー・個人情報が映り込んでいない</li>
+  <li>質疑用に「毎回この精度が出るとは限らない」と言う準備をした</li>
+</ul>
+
+<footer class="page">
+  リポジトリ <code>shokawakita/claude-review-demo</code> ／ デモ差分は <code>feature/monthly-summary</code>。
+  指摘の全文は <code>docs/lt/review-result.md</code>、再現手順は <code>docs/lt/demo-steps.md</code>。
+</footer>
+
+</div>
