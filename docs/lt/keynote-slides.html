@@ -349,14 +349,15 @@
     <span class="chip">キャプチャ <b>12枚</b></span>
     <span class="chip">所要 <b>4分56秒</b></span>
     <span class="chip">medium <b>3件 / 54秒</b></span>
+    <span class="chip">high <b>7件 / 2分34秒</b></span>
     <span class="chip">聞き手 <b>エンジニア中心</b></span>
   </div>
 </header>
 
-<div class="callout todo">
-  <h4>まだ埋まっていない数字が2つあります</h4>
-  <p>high の <strong>指摘件数</strong>と<strong>実行時間</strong>は、<code>STEP7_4</code>（メイン画面）を見てから確定します。仕様書内では <span class="todo-inline">要確認</span> のタグを付けてあります。</p>
-  <p>キャプチャの「<code>Agent "/code-review" finished · ○○s</code>」の行に実行時間が、「<code>○件の問題が見つかりました</code>」に件数が出ています。そこを読んで置き換えてください。</p>
+<div class="callout">
+  <h4>山場は「README」ではなく「CLAUDE.md」です</h4>
+  <p>実行結果に出ていたのは <code>README</code> への言及ではなく、<strong><code>CLAUDE.md</code> に書かれたご自身のルールの引用</strong>でした。</p>
+  <p>「<code>strconv.Atoi</code> のエラー握りつぶしは、<strong>CLAUDE.md の『エラーは握りつぶさず、意味のあるメッセージ付きで処理する』というルールにも反する</strong>」。この一文がLTの結論です。スライド12はこれを軸に組んであります。</p>
 </div>
 
 <h2 class="sec">スライド 01 — 15</h2>
@@ -577,6 +578,7 @@
               <li>ゼロ除算で panic する</li>
               <li><code>strconv.Atoi</code> のエラー握りつぶし</li>
             </ul>
+            <span class="sub">3件とも「実際に動かして確認済み」</span>
           </div>
         </div>
         <div><h4 class="lbl">貼る画像（主 + 従）</h4>
@@ -586,7 +588,7 @@
       </div>
       <div class="col-right">
         <div><h4 class="lbl">話すこと</h4>
-          <div class="talk"><p>54秒で3件出ました。さっきの符号バグは1件目です。「2026-01のデータだと本来3200のところ36800と算出される」と、<strong>具体的な数字まで書いてあります。</strong></p><p>3件目を見てください。<code>CLAUDE.md</code> の「エラーは握りつぶさない」というルールに反する、と書いてあります。<strong>私がこのリポジトリに書いた決めごとです。</strong></p></div>
+          <div class="talk"><p>54秒で3件出ました。さっきの符号バグは1件目です。「2026-01のデータだと本来3200のところ36800と算出される」と、<strong>具体的な数字まで書いてあります。</strong>推測ではなく、実際にビルドして動かした上での指摘です。</p><p>ここまでは、正直まあそうだろうなと思っていました。驚いたのはこの次です。</p></div>
         </div>
         <div><h4 class="lbl">2枚に分ける理由</h4>
           <p class="why">メイン画面が<strong>結論</strong>、サブエージェント画面が<strong>作業量の証拠</strong>です。小さく添えるだけで「裏でこれだけ調べている」が伝わります。説明は不要。</p>
@@ -623,25 +625,26 @@
 
   <!-- 11 -->
   <article class="slide">
-    <div class="slide-head"><span class="num">11</span><h3>high の結果</h3><span class="dur">20秒</span></div>
+    <div class="slide-head"><span class="num">11</span><h3>high の結果：7件 / 2分34秒</h3><span class="dur">20秒</span></div>
     <div class="slide-body">
       <div class="col-left">
         <div><h4 class="lbl">スライドに出す文字</h4>
           <div class="screen">
-            <span class="big">指摘 <span class="todo-inline">○件</span> / <span class="todo-inline">○秒</span></span>
-            <span class="sub">medium の3件 <span class="redline">＋ 増えたぶん</span></span>
+            <span class="big">指摘 7件 / 2分34秒</span>
+            <span class="sub">3件 → 7件。時間は約3倍</span>
+            <span class="sub">重要度が色分けされる（赤4件・黄3件）</span>
           </div>
         </div>
         <div><h4 class="lbl">貼る画像</h4>
-          <div class="slot"><span class="fn">STEP7_4_:code-review実行結果_メイン_high.png</span><span class="place">配置：<b>大きく中央</b>。件数が伝わればよい</span></div>
+          <div class="slot"><span class="fn">STEP7_4_:code-review実行結果_メイン_high.png</span><span class="place">配置：<b>大きく中央</b>。<b>行番号の左に付く赤と黄の丸</b>が見えるように</span></div>
         </div>
       </div>
       <div class="col-right">
         <div><h4 class="lbl">話すこと</h4>
-          <div class="talk"><p>件数が増えました。増えた中にこれがありました、と言って次へ。</p></div>
+          <div class="talk"><p>7件に増えました。時間は54秒から2分34秒。約3倍かかっています。</p><p>赤と黄で重要度が分かれていて、赤が4件、黄が3件。増えたのは、表示順が実行のたびに変わる問題や、ループが2回まわっている効率の指摘などです。</p><p>ただ、私が一番おっと思ったのはこれでした。</p></div>
         </div>
         <div><h4 class="lbl">この画像を出す理由</h4>
-          <p class="why">「増えた」という<strong>事実だけ</strong>を見せる枚です。中身は次で拡大するので、ここでは読ませません。<span class="todo-inline">要確認</span> の2箇所は <code>STEP7_4</code> の画面から数字を読んで埋めてください。</p>
+          <p class="why">「増えた」という<strong>事実と、時間という代償</strong>を見せる枚です。中身は次で拡大するので、ここでは読ませません。赤黄の色分けは口頭で1秒触れるだけで伝わります。</p>
         </div>
       </div>
     </div>
@@ -649,28 +652,27 @@
 
   <!-- 12 -->
   <article class="slide peak">
-    <div class="slide-head"><span class="num">12</span><h3>決めごとと突き合わせている</h3><span class="tag peak">山場</span><span class="dur">45秒</span></div>
+    <div class="slide-head"><span class="num">12</span><h3>自分が書いたルールを読んでいる</h3><span class="tag peak">山場</span><span class="dur">45秒</span></div>
     <div class="slide-body">
       <div class="col-left">
         <div><h4 class="lbl">スライドに出す文字</h4>
           <div class="screen">
-            <span class="big">「README のルールに違反している」</span>
+            <span class="sub">strconv.Atoi のエラー握りつぶしについて</span>
             <hr>
-            <span class="sub">粗利 = 売上 − 原価</span>
-            <span class="sub">利益分配は原価ではなく、粗利から払う</span>
+            <span class="big">「これは CLAUDE.md の<br>『エラーは握りつぶさず、意味のある<br>メッセージ付きで処理する』<br>というルールにも反する」</span>
           </div>
         </div>
-        <div><h4 class="lbl">貼る画像（2枚を上下に）</h4>
-          <div class="slot"><span class="fn">STEP7_2_:code-review実行結果_サブエージェント_high.png</span><span class="place">配置：<b>該当の指摘だけを切り出して、大きく</b>。このLTで<b>唯一、文字を読ませる画像</b></span></div>
-          <div class="slot"><span class="fn">STEP7_3_:code-review実行結果2_サブエージェント_high.png</span><span class="place">配置：<b>下に小さく</b>、または総括の一文だけを切り出して添える</span></div>
+        <div><h4 class="lbl">貼る画像（主 + 従）</h4>
+          <div class="slot"><span class="fn">STEP7_3_:code-review実行結果2_サブエージェント_high.png</span><span class="place">配置：<b>ledger.go:40 の指摘だけを切り出して、大きく</b>。<code>CLAUDE.md rule</code> と日本語のルール文が読めること。<b>このLTで唯一、文字を読ませる画像</b></span></div>
+          <div class="slot"><span class="fn">STEP7_2_:code-review実行結果_サブエージェント_high.png</span><span class="place">配置：<b>隅に小さく</b>。8観点で調べている様子の証拠として</span></div>
         </div>
       </div>
       <div class="col-right">
         <div><h4 class="lbl">話すこと</h4>
-          <div class="talk"><p>このリポジトリの README には、会計上の決めごとが書いてあります。「粗利は売上マイナス原価」「利益分配は原価ではなく、粗利の中から払う」。</p><p class="beat">【ここで一拍おく】</p><p><strong>コードではなく、README です。</strong></p><p>実装はこれを守っておらず、分配を原価として引いていました。Claude はその README を読んだ上で、「これは README に書かれたルールへの違反だ」と指摘してきました。</p><p>文法チェックでも、よくあるバグパターンの検出でもないですよね。<strong>リポジトリの中の決めごとを読んで、それと突き合わせている。</strong>ここまでやるとは思っていませんでした。</p></div>
+          <div class="talk"><p>3件目、エラーを握りつぶしているという指摘です。その最後にこう書いてありました。</p><p class="beat">【読み上げる】</p><p>「これは <strong>CLAUDE.md のルール</strong>、『エラーは握りつぶさず、意味のあるメッセージ付きで処理する』にも反する」。</p><p class="beat">【ここで一拍おく】</p><p><code>CLAUDE.md</code> は、<strong>私が普段から書いている自分のルールファイル</strong>です。コードでもドキュメントでもなく、私の決めごとです。</p><p>Claude はそれを読んだ上で、「このコードはあなたのルールに反している」と言ってきました。<strong>一般論のバグ検出ではなく、私の基準で見ている。</strong></p><p>ちなみに1件目も同じです。分配を支出に混ぜている、という指摘。これも私が決めた会計のルールと食い違っている箇所でした。</p></div>
         </div>
         <div><h4 class="lbl">この画像を出す理由</h4>
-          <p class="why">LTの<strong>結論そのもの</strong>。投影して、会場の一番うしろから文字が読めるか必ず確認してください。読めないなら、指摘部分を切り出して拡大するか、テキストで打ち直します。</p>
+          <p class="why">LTの<strong>結論そのもの</strong>。しかも聞き手が<strong>すぐ真似できる</strong>話です — 「<code>CLAUDE.md</code> に自分のルールを書いておけば、レビューがそれを見てくれる」。<br>投影して、会場の一番うしろから読めるか必ず確認してください。読めないなら、この引用文を<strong>Keynote のテキストで打ち直して</strong>大きく出し、キャプチャは証拠として小さく添えるだけにします。</p>
         </div>
       </div>
     </div>
@@ -684,11 +686,11 @@
         <div><h4 class="lbl">スライドに出す文字（表で1枚）</h4>
           <div class="screen">
             <dl>
-              <dt>&nbsp;</dt><dd><strong>medium / high</strong></dd>
-              <dt>時間</dt><dd>54秒 / <span class="todo-inline">○秒</span></dd>
-              <dt>件数</dt><dd>3件 / <span class="todo-inline">○件</span></dd>
-              <dt>探し方</dt><dd>手作業で検証 / 8観点を展開</dd>
-              <dt>向く場面</dt><dd>日常 / 重要な差分</dd>
+              <dt>&nbsp;</dt><dd><strong>medium ／ high</strong></dd>
+              <dt>時間</dt><dd>54秒 ／ <strong>2分34秒</strong></dd>
+              <dt>件数</dt><dd>3件 ／ <strong>7件</strong></dd>
+              <dt>探し方</dt><dd>手作業で検証 ／ 8観点を展開</dd>
+              <dt>向く場面</dt><dd>日常 ／ 大きい差分・リリース前</dd>
             </dl>
           </div>
         </div>
@@ -696,10 +698,10 @@
       </div>
       <div class="col-right">
         <div><h4 class="lbl">話すこと</h4>
-          <div class="talk"><p>2つの違いです。時間は54秒に対して<span class="todo-inline">○秒</span>、件数は3件に対して<span class="todo-inline">○件</span>。</p><p>面白いのが<strong>探し方が変わる</strong>ところです。medium のときは「差分が小さいので、8方向のエージェント群は立てずに手作業で確認した」と書いてありました。high では「8つの観点でエージェントを展開して候補を出し、重大なものは実際にビルドして動かして確かめた」と。</p><p>普段は引数なし、リリース前や大きめの差分だけ high、くらいの使い分けでいいと思います。</p></div>
+          <div class="talk"><p>2つの違いです。54秒で3件に対して、2分34秒で7件。<strong>件数は倍以上ですが、時間も約3倍</strong>かかります。</p><p>面白いのが<strong>探し方そのものが変わる</strong>ところです。medium のときは「差分が小さいので、8方向のエージェント群は立てずに手作業で確認した」と書いてありました。high では「8つの観点でエージェントを展開して候補を出し、重大なものは実際にビルドして動かして確かめた」と。</p><p>普段は引数なし。リリース前や、お金や権限を触る差分だけ high。それくらいの使い分けでいいと思います。</p></div>
         </div>
         <div><h4 class="lbl">この内容の出どころ</h4>
-          <p class="why">推測ではなく、<strong>サブエージェントの画面にそう書いてあります</strong>（<code>STEP6_1</code> と <code>STEP7_3</code>）。時間があれば該当箇所を切り出して添えると説得力が出ますが、なくても口頭で十分伝わります。</p>
+          <p class="why">推測ではなく、<strong>サブエージェントの画面にそう書いてあります</strong>（<code>STEP6_1</code> と <code>STEP7_2</code>）。時間があれば該当の一文を切り出して添えると説得力が出ますが、なくても口頭で十分伝わります。</p>
         </div>
       </div>
     </div>
@@ -763,8 +765,8 @@
 <table>
   <thead><tr><th></th><th>medium（引数なし）</th><th>high</th></tr></thead>
   <tbody>
-    <tr><td><strong>実行時間</strong></td><td class="n">54秒</td><td class="n"><span class="todo-inline">要確認</span></td></tr>
-    <tr><td><strong>指摘件数</strong></td><td class="n">3件</td><td class="n"><span class="todo-inline">要確認</span></td></tr>
+    <tr><td><strong>実行時間</strong></td><td class="n">54秒</td><td class="n">2分34秒（約3倍）</td></tr>
+    <tr><td><strong>指摘件数</strong></td><td class="n">3件</td><td class="n">7件（赤4・黄3）</td></tr>
     <tr>
       <td><strong>探し方</strong></td>
       <td>差分が小さいと判断し、<strong>8方向のエージェント群を立てずに手作業で検証</strong>（画面に明記）</td>
@@ -773,12 +775,16 @@
     <tr>
       <td><strong>拾ったもの</strong></td>
       <td>符号の二重反転 ／ ゼロ除算 panic ／ <code>Atoi</code> のエラー握りつぶし</td>
-      <td>上記に加えて、<code>share</code>（分配）を原価に混ぜている点など</td>
+      <td>左の3件に加えて — <code>share</code>（分配）を支出に混入 ／ <code>map</code> 反復で表示順が毎回変わる ／ 空CSVで <code>records[1:]</code> が panic ／ 月の前方一致でゼロ埋め漏れが混入 ／ ループ2周を1周にまとめられる（効率）</td>
     </tr>
     <tr>
       <td><strong>決めごとの参照</strong></td>
-      <td><code>CLAUDE.md</code> の「エラーは握りつぶさない」ルールを引用</td>
-      <td><code>README.md</code> の会計ルール（粗利の定義・分配の扱い）を引用</td>
+      <td colspan="2"><strong>どちらも <code>CLAUDE.md</code> の「エラーは握りつぶさず、意味のあるメッセージ付きで処理する」を引用。</strong>これがLTの山場（スライド12）</td>
+    </tr>
+    <tr>
+      <td><strong>重要度と分類</strong></td>
+      <td>3件とも<strong>赤</strong>。分類は <code>correctness</code> 2件 / <code>error-handling</code> 1件</td>
+      <td><strong>赤4件・黄3件</strong>に分かれる。分類は <code>correctness</code> 6件 / <code>efficiency</code> 1件</td>
     </tr>
     <tr>
       <td><strong>向く場面</strong></td>
@@ -792,6 +798,8 @@
 <div class="callout" style="margin-top:20px">
   <h4>質疑で聞かれたら</h4>
   <p><strong>「毎回同じ結果が出る？」</strong> — 出ません。同じ差分でも実行のたびに件数は変わります。実際、この差分を別の条件で流したときは medium で5件、high で8件でした。<strong>「当たり外れはあるが、出してくれるものは実際に動かして裏を取っている」</strong>という答え方が正確です。</p>
+  <p><strong>「結合試験すれば見つかるのでは？」</strong> — そのとおりです、と認めてください。スライド04で先に言ってあるので、繰り返すだけで済みます。「<strong>結合試験まで行けば見つかります。それを製造の段階で、人に見せる前に、54秒で潰せるという話です</strong>」。</p>
+  <p><strong>「CLAUDE.md って何？」</strong> — プロジェクトや自分の作業ルールを書いておくファイルです。<code>/init</code> で雛形が作れます。ここに書いておくと、今日のようにレビューがそれを参照します、と一言添えられると親切です。</p>
 </div>
 
 <h2 class="sec">時間配分</h2>
@@ -844,9 +852,9 @@
 
 <ul class="check">
   <li>キャプチャ12枚を全部貼った</li>
-  <li><strong><code>STEP7_4</code> を見て、high の件数と実行時間（<span class="todo-inline">要確認</span> の4箇所）を埋めた</strong></li>
   <li>07 の「36800」に赤枠を付けた</li>
   <li>04 で <code>/model</code>・<code>/effort</code> が読める大きさになっている</li>
+  <li><strong>12 の <code>CLAUDE.md rule</code> の引用文が読める</strong>（読めないならテキストで打ち直す）</li>
   <li>実際に投影して、<strong>会場の一番うしろから 12 の文字が読める</strong>ことを確認した</li>
   <li>時計を見ながら通しで1回読み、5分を超えなかった</li>
   <li>キャプチャに他の作業画面・APIキー・個人情報が映り込んでいない</li>
