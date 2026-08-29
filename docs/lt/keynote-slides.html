@@ -15,6 +15,8 @@
     --anchor: #2E4057;
     --slot: #7A8899;
     --slot-bg: #EDF0F4;
+    --todo: #8A6A17;
+    --todo-bg: #FBF3E0;
     --shadow: 0 1px 2px rgba(26, 31, 38, .06), 0 8px 24px rgba(26, 31, 38, .05);
   }
   @media (prefers-color-scheme: dark) {
@@ -32,6 +34,8 @@
       --anchor: #9FB3C8;
       --slot: #8794A3;
       --slot-bg: #212630;
+      --todo: #D9B45F;
+      --todo-bg: #2A2418;
       --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px rgba(0, 0, 0, .3);
     }
   }
@@ -49,6 +53,8 @@
     --anchor: #9FB3C8;
     --slot: #8794A3;
     --slot-bg: #212630;
+    --todo: #D9B45F;
+    --todo-bg: #2A2418;
     --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px rgba(0, 0, 0, .3);
   }
 
@@ -75,8 +81,6 @@
 
   code, .mono { font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace; }
 
-  /* ---------- header ---------- */
-
   header.page {
     padding: 64px 0 32px;
     border-bottom: 2px solid var(--ink);
@@ -100,12 +104,7 @@
     max-width: 60ch;
     margin: 14px 0 0;
   }
-  .meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 24px;
-  }
+  .meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
   .chip {
     font-family: "JetBrains Mono", monospace;
     font-size: 12px;
@@ -118,8 +117,6 @@
   }
   .chip b { color: var(--ink); font-weight: 700; }
 
-  /* ---------- callout ---------- */
-
   .callout {
     background: var(--mark-soft);
     border-left: 3px solid var(--mark);
@@ -129,8 +126,8 @@
   .callout h4 { font-size: 15px; color: var(--mark); margin-bottom: 6px; }
   .callout p { margin: 0; color: var(--ink-soft); }
   .callout p + p { margin-top: 8px; }
-
-  /* ---------- section titles ---------- */
+  .callout.todo { background: var(--todo-bg); border-left-color: var(--todo); }
+  .callout.todo h4 { color: var(--todo); }
 
   h2.sec {
     font-size: 13px;
@@ -144,8 +141,6 @@
     border-bottom: 1px solid var(--rule);
   }
 
-  /* ---------- slide card ---------- */
-
   .deck { display: flex; flex-direction: column; gap: 20px; }
 
   article.slide {
@@ -156,6 +151,7 @@
     overflow: hidden;
   }
   article.slide.peak { border-color: var(--mark); }
+  article.slide.fresh { border-color: var(--anchor); }
 
   .slide-head {
     display: flex;
@@ -164,6 +160,7 @@
     padding: 16px 22px;
     border-bottom: 1px solid var(--rule);
     background: var(--surface-sunk);
+    flex-wrap: wrap;
   }
   .num {
     font-family: "JetBrains Mono", monospace;
@@ -172,20 +169,16 @@
     font-variant-numeric: tabular-nums;
     color: var(--anchor);
   }
-  .slide-head h3 {
-    font-size: 17px;
-    font-weight: 700;
-    flex: 1;
-  }
-  .peak-tag {
+  .slide-head h3 { font-size: 17px; font-weight: 700; flex: 1; }
+  .tag {
     font-size: 11px;
     font-family: "JetBrains Mono", monospace;
     letter-spacing: .08em;
-    color: var(--mark);
-    border: 1px solid var(--mark);
     border-radius: 2px;
     padding: 2px 7px;
   }
+  .tag.peak { color: var(--mark); border: 1px solid var(--mark); }
+  .tag.new { color: var(--anchor); border: 1px solid var(--anchor); }
   .dur {
     font-family: "JetBrains Mono", monospace;
     font-size: 12px;
@@ -193,11 +186,7 @@
     color: var(--ink-faint);
   }
 
-  .slide-body {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 0;
-  }
+  .slide-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   @media (max-width: 820px) {
     .slide-body { grid-template-columns: minmax(0, 1fr); }
     .col-left { border-right: none !important; border-bottom: 1px solid var(--rule); }
@@ -209,12 +198,7 @@
     flex-direction: column;
     gap: 16px;
   }
-  .col-right {
-    padding: 22px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
+  .col-right { padding: 22px; display: flex; flex-direction: column; gap: 16px; }
 
   h4.lbl {
     font-family: "JetBrains Mono", monospace;
@@ -226,7 +210,6 @@
     margin-bottom: 8px;
   }
 
-  /* slide text preview */
   .screen {
     background: var(--ground);
     border: 1px solid var(--rule);
@@ -239,17 +222,14 @@
   }
   .screen .big { font-size: 20px; font-weight: 700; display: block; }
   .screen .sub { color: var(--ink-soft); font-size: 13px; font-weight: 400; display: block; }
-  .screen .cmd {
-    font-family: "JetBrains Mono", monospace;
-    font-weight: 700;
-    font-size: 17px;
-    display: block;
-  }
+  .screen .cmd { font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 17px; display: block; }
   .screen .redline { color: var(--mark); font-weight: 700; }
   .screen ul { margin: 6px 0 0; padding-left: 1.1em; font-size: 14px; font-weight: 400; }
+  .screen dl { margin: 0; font-size: 14px; font-weight: 400; display: grid; grid-template-columns: auto 1fr; gap: 2px 14px; }
+  .screen dt { color: var(--ink-faint); }
+  .screen dd { margin: 0; }
   .screen hr { border: 0; border-top: 1px solid var(--rule); margin: 12px 0; }
 
-  /* image slot */
   .slot {
     border: 1.5px dashed var(--rule-strong);
     background: var(--slot-bg);
@@ -265,12 +245,7 @@
     word-break: break-all;
     display: block;
   }
-  .slot .place {
-    font-size: 12.5px;
-    color: var(--slot);
-    margin-top: 5px;
-    display: block;
-  }
+  .slot .place { font-size: 12.5px; color: var(--slot); margin-top: 5px; display: block; }
   .slot .place b { color: var(--mark); font-weight: 500; }
   .noimg {
     font-size: 13px;
@@ -281,11 +256,7 @@
     text-align: center;
   }
 
-  .talk {
-    border-left: 2px solid var(--rule-strong);
-    padding-left: 14px;
-    color: var(--ink);
-  }
+  .talk { border-left: 2px solid var(--rule-strong); padding-left: 14px; color: var(--ink); }
   .talk p { margin: 0; }
   .talk p + p { margin-top: 10px; }
   .talk .beat { color: var(--ink-faint); font-size: 13px; }
@@ -293,7 +264,16 @@
   .why { font-size: 13.5px; color: var(--ink-soft); margin: 0; }
   .why strong { color: var(--ink); font-weight: 500; }
 
-  /* ---------- table ---------- */
+  .todo-inline {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    background: var(--todo-bg);
+    color: var(--todo);
+    border: 1px solid var(--todo);
+    border-radius: 2px;
+    padding: 1px 6px;
+    white-space: nowrap;
+  }
 
   .scroll { overflow-x: auto; }
   table {
@@ -303,11 +283,7 @@
     background: var(--surface);
     border: 1px solid var(--rule);
   }
-  th, td {
-    text-align: left;
-    padding: 9px 14px;
-    border-bottom: 1px solid var(--rule);
-  }
+  th, td { text-align: left; padding: 9px 14px; border-bottom: 1px solid var(--rule); vertical-align: top; }
   th {
     font-family: "JetBrains Mono", monospace;
     font-size: 11px;
@@ -321,8 +297,6 @@
   tr.peak-row td { background: var(--mark-soft); font-weight: 500; }
   tr:last-child td { border-bottom: 0; }
   tr.total td { border-top: 2px solid var(--ink); font-weight: 700; }
-
-  /* ---------- lists ---------- */
 
   ol.trim, ul.check {
     background: var(--surface);
@@ -346,13 +320,14 @@
   ol.trim li, ul.check li { margin-bottom: 8px; }
   ol.trim li:last-child, ul.check li:last-child { margin-bottom: 0; }
 
-  code:not(.screen code) {
+  code {
     background: var(--surface-sunk);
     border: 1px solid var(--rule);
     border-radius: 2px;
     padding: 1px 5px;
     font-size: .88em;
   }
+  .screen code, td code, th code { background: none; border: 0; padding: 0; }
 
   footer.page {
     margin-top: 72px;
@@ -368,47 +343,43 @@
 <header class="page">
   <div class="eyebrow">Lightning Talk · 組み立て仕様書</div>
   <h1>レビューを出す前に、1回だけ通す</h1>
-  <p class="lede">Claude Code の <code>/code-review</code> を紹介する3〜5分のLT。この仕様書のとおりに Keynote で13枚作ると、撮影済みのキャプチャ12枚がすべて収まります。</p>
+  <p class="lede">Claude Code の <code>/code-review</code> を紹介する3〜5分のLT。この仕様書のとおりに Keynote で15枚作ると、撮影済みのキャプチャ12枚がすべて収まります。件数と実行時間は<strong>すべて実測値</strong>です。</p>
   <div class="meta">
-    <span class="chip">スライド <b>13枚</b></span>
+    <span class="chip">スライド <b>15枚</b></span>
     <span class="chip">キャプチャ <b>12枚</b></span>
-    <span class="chip">所要 <b>4分45秒</b></span>
+    <span class="chip">所要 <b>4分56秒</b></span>
+    <span class="chip">medium <b>3件 / 54秒</b></span>
     <span class="chip">聞き手 <b>エンジニア中心</b></span>
   </div>
 </header>
 
-<div class="callout">
-  <h4>作りはじめる前に：STEP5_1 はトリミングしてください</h4>
-  <p>この画面の上部に <code>/model</code>（Sonnet 5）と <code>/effort medium</code> の実行履歴が写り込んでいます。これは <strong>Claude Code 全体の設定</strong>で、<code>/code-review high</code> の「厳しさ」とは別の機能です。</p>
-  <p>そのまま出すと「さっき設定した effort と同じもの？」という質問が出ます。<b>コマンド候補が出ている下半分だけ</b>を切り出して使ってください。</p>
+<div class="callout todo">
+  <h4>まだ埋まっていない数字が2つあります</h4>
+  <p>high の <strong>指摘件数</strong>と<strong>実行時間</strong>は、<code>STEP7_4</code>（メイン画面）を見てから確定します。仕様書内では <span class="todo-inline">要確認</span> のタグを付けてあります。</p>
+  <p>キャプチャの「<code>Agent "/code-review" finished · ○○s</code>」の行に実行時間が、「<code>○件の問題が見つかりました</code>」に件数が出ています。そこを読んで置き換えてください。</p>
 </div>
 
-<h2 class="sec">スライド 01 — 13</h2>
+<h2 class="sec">スライド 01 — 15</h2>
 
 <div class="deck">
 
   <!-- 01 -->
   <article class="slide">
-    <div class="slide-head"><span class="num">01</span><h3>タイトル</h3><span class="dur">12秒</span></div>
+    <div class="slide-head"><span class="num">01</span><h3>タイトル</h3><span class="dur">10秒</span></div>
     <div class="slide-body">
       <div class="col-left">
-        <div>
-          <h4 class="lbl">スライドに出す文字</h4>
+        <div><h4 class="lbl">スライドに出す文字</h4>
           <div class="screen">
             <span class="big">レビューを出す前に、1回だけ通す</span>
             <span class="sub">Claude Code <code>/code-review</code></span>
             <span class="sub">お名前 / 日付</span>
           </div>
         </div>
-        <div>
-          <h4 class="lbl">貼る画像</h4>
-          <div class="noimg">画像なし（文字だけ）</div>
-        </div>
+        <div><h4 class="lbl">貼る画像</h4><div class="noimg">画像なし（文字だけ）</div></div>
       </div>
       <div class="col-right">
-        <div>
-          <h4 class="lbl">話すこと</h4>
-          <div class="talk"><p>Claude Code の機能をひとつだけ紹介します。コードレビューです。4分後には、今日から打てるコマンドを1つ持って帰れます。</p></div>
+        <div><h4 class="lbl">話すこと</h4>
+          <div class="talk"><p>Claude Code の機能をひとつだけ紹介します。コードレビューです。5分後には、今日から打てるコマンドを1つ持って帰れます。</p></div>
         </div>
       </div>
     </div>
@@ -416,22 +387,17 @@
 
   <!-- 02 -->
   <article class="slide">
-    <div class="slide-head"><span class="num">02</span><h3>つかみ</h3><span class="dur">18秒</span></div>
+    <div class="slide-head"><span class="num">02</span><h3>つかみ</h3><span class="dur">15秒</span></div>
     <div class="slide-body">
       <div class="col-left">
-        <div>
-          <h4 class="lbl">スライドに出す文字</h4>
+        <div><h4 class="lbl">スライドに出す文字</h4>
           <div class="screen"><span class="big">レビュー依頼、少し身構えませんか</span></div>
         </div>
-        <div>
-          <h4 class="lbl">貼る画像</h4>
-          <div class="noimg">画像なし（文字だけ）</div>
-        </div>
+        <div><h4 class="lbl">貼る画像</h4><div class="noimg">画像なし（文字だけ）</div></div>
       </div>
       <div class="col-right">
-        <div>
-          <h4 class="lbl">話すこと</h4>
-          <div class="talk"><p>レビューを出すとき、少し身構えませんか。初歩的なミスでレビュアーの時間を取るのが申し訳ない、とか。あと単純に、レビュー待ちで手が止まるのがもったいない。人に出す前に自分で一回潰せたらいいなと思って、実際に試してみた話をします。</p></div>
+        <div><h4 class="lbl">話すこと</h4>
+          <div class="talk"><p>レビューを出すとき、少し身構えませんか。初歩的なミスでレビュアーの時間を取るのが申し訳ない、とか。あと単純に、レビュー待ちで手が止まるのがもったいない。人に出す前に自分で一回潰せたらいいなと思って、試した話をします。</p></div>
         </div>
       </div>
     </div>
@@ -439,63 +405,56 @@
 
   <!-- 03 -->
   <article class="slide">
-    <div class="slide-head"><span class="num">03</span><h3>結論</h3><span class="dur">15秒</span></div>
+    <div class="slide-head"><span class="num">03</span><h3>結論</h3><span class="dur">12秒</span></div>
     <div class="slide-body">
       <div class="col-left">
-        <div>
-          <h4 class="lbl">スライドに出す文字</h4>
+        <div><h4 class="lbl">スライドに出す文字</h4>
           <div class="screen">
             <span class="cmd">/code-review</span>
             <hr>
             <span class="sub">引数なし。いまの差分を自動で拾う</span>
           </div>
         </div>
-        <div>
-          <h4 class="lbl">貼る画像</h4>
-          <div class="noimg">画像なし（コマンドを大きく1つだけ）</div>
-        </div>
+        <div><h4 class="lbl">貼る画像</h4><div class="noimg">画像なし（コマンドを大きく1つだけ）</div></div>
       </div>
       <div class="col-right">
-        <div>
-          <h4 class="lbl">話すこと</h4>
-          <div class="talk"><p>結論はこれだけです。Claude Code を起動して <code>/code-review</code>。引数もファイル名も要りません。いまのブランチの差分を自動で見つけてレビューします。実際にやってみたので、画面を見てください。</p></div>
+        <div><h4 class="lbl">話すこと</h4>
+          <div class="talk"><p>結論はこれだけです。Claude Code を起動して <code>/code-review</code>。引数もファイル名も要りません。いまのブランチの差分を自動で見つけてレビューします。</p></div>
         </div>
       </div>
     </div>
   </article>
 
   <!-- 04 -->
-  <article class="slide">
-    <div class="slide-head"><span class="num">04</span><h3>題材：ごく普通のPR</h3><span class="dur">22秒</span></div>
+  <article class="slide fresh">
+    <div class="slide-head"><span class="num">04</span><h3>今日の前提</h3><span class="tag new">環境の明示</span><span class="dur">20秒</span></div>
     <div class="slide-body">
       <div class="col-left">
-        <div>
-          <h4 class="lbl">スライドに出す文字</h4>
+        <div><h4 class="lbl">スライドに出す文字</h4>
           <div class="screen">
-            <span class="big">Go の収支集計CLI</span>
-            <span class="sub">3ファイル / 130行 &nbsp;·&nbsp; build も vet も無警告</span>
+            <span class="big">今日の前提</span>
+            <hr>
+            <dl>
+              <dt>モデル</dt><dd>Claude Sonnet 5</dd>
+              <dt>effort</dt><dd>medium</dd>
+              <dt>バージョン</dt><dd>Claude Code v2.1.251</dd>
+              <dt>想定</dt><dd>製造／単体実装フェーズのレビュー</dd>
+            </dl>
           </div>
         </div>
-        <div>
-          <h4 class="lbl">貼る画像（2枚を上下に）</h4>
+        <div><h4 class="lbl">貼る画像</h4>
           <div class="slot">
-            <span class="fn">STEP1_差分確認.png</span>
-            <span class="place">配置：<b>上半分</b>。差分の大きさを見せる</span>
-          </div>
-          <div class="slot">
-            <span class="fn">STEP2_ビルド&amp;vet確認.png</span>
-            <span class="place">配置：<b>下半分</b>。<code>OK</code> の行が読めれば十分なので小さくてよい</span>
+            <span class="fn">STEP5_1_:code-review実行前_medium.png</span>
+            <span class="place">配置：<b>右半分。上部の /model・/effort が写っている部分をあえて見せる</b>。文字リストは左半分</span>
           </div>
         </div>
       </div>
       <div class="col-right">
-        <div>
-          <h4 class="lbl">話すこと</h4>
-          <div class="talk"><p>題材は Go の小さな CLI です。CSVの台帳を読んで、月ごとの収支を集計するだけ。差分は3ファイル130行、よくあるサイズのPRだと思います。</p><p>build も vet も無警告で通ります。<strong>静的解析では何も出ません。</strong></p></div>
+        <div><h4 class="lbl">話すこと</h4>
+          <div class="talk"><p>前提を先に言っておきます。モデルは Sonnet 5、effort は medium、Claude Code は v2.1.251 です。画面の上に実際の設定が出ています。</p><p>それから<strong>どの工程の話か</strong>。今日お見せするのは<strong>製造・単体実装のフェーズ</strong>、つまりコードを書き終えて人にレビューを出す直前です。今日出てくるバグは、結合試験まで行けば見つかるはずのものです。<strong>それをもっと手前で、自分ひとりで潰す</strong>という話をします。</p></div>
         </div>
-        <div>
-          <h4 class="lbl">この2枚を出す理由</h4>
-          <p class="why">「ツールが見つけたのは、どうせ lint で出るやつでしょ」という<strong>先回りの反論を先に潰す</strong>ため。ここで潰しておくと、あとの指摘がすべて効きます。</p>
+        <div><h4 class="lbl">このスライドを入れる理由</h4>
+          <p class="why">エンジニア相手だと「どの条件で？」「それ結合試験で見つかるでしょ」の2つが<strong>必ず出ます</strong>。両方をここで先に潰しておくと、以降の質問が消えて本題に集中できます。<code>/model</code>・<code>/effort</code> の画面は隠さず、<strong>環境を示す証拠として積極的に見せてください</strong>。</p>
         </div>
       </div>
     </div>
@@ -503,101 +462,77 @@
 
   <!-- 05 -->
   <article class="slide">
-    <div class="slide-head"><span class="num">05</span><h3>実装を見せる</h3><span class="dur">20秒</span></div>
+    <div class="slide-head"><span class="num">05</span><h3>題材：ごく普通のPR</h3><span class="dur">20秒</span></div>
     <div class="slide-body">
       <div class="col-left">
-        <div>
-          <h4 class="lbl">スライドに出す文字</h4>
-          <div class="screen"><span class="big">集計しているのは、これだけ</span></div>
-        </div>
-        <div>
-          <h4 class="lbl">貼る画像</h4>
-          <div class="slot">
-            <span class="fn">STEP3_実装確認.png</span>
-            <span class="place">配置：<b>スライドいっぱい</b>。文字が小さいので、上下の余白（プロンプト行）は切り落とす</span>
+        <div><h4 class="lbl">スライドに出す文字</h4>
+          <div class="screen">
+            <span class="big">Go の収支集計CLI</span>
+            <span class="sub">3ファイル / 130行 &nbsp;·&nbsp; build も vet も無警告</span>
           </div>
+        </div>
+        <div><h4 class="lbl">貼る画像（2枚を上下に）</h4>
+          <div class="slot"><span class="fn">STEP1_差分確認.png</span><span class="place">配置：<b>上半分</b>。差分の大きさを見せる</span></div>
+          <div class="slot"><span class="fn">STEP2_ビルド&amp;vet確認.png</span><span class="place">配置：<b>下半分</b>。<code>OK</code> の行が読めれば十分</span></div>
         </div>
       </div>
       <div class="col-right">
-        <div>
-          <h4 class="lbl">話すこと</h4>
-          <div class="talk"><p>1行ずつ見て、売上なら売上に、それ以外は支出に足していく。最後に売上マイナス支出で粗利を出す。</p><p>ごく普通のコードに見えると思います。実際、私もそう思っていました。</p></div>
+        <div><h4 class="lbl">話すこと</h4>
+          <div class="talk"><p>題材は Go の小さな CLI です。CSVの台帳を読んで、月ごとの収支を集計するだけ。差分は3ファイル130行、よくあるサイズのPRだと思います。</p><p>build も vet も無警告で通ります。<strong>静的解析では何も出ません。</strong></p></div>
         </div>
-        <div>
-          <h4 class="lbl">この画像を出す理由</h4>
-          <p class="why">聞き手にバグを探させる必要は<strong>ありません</strong>。次のスライドで「実は間違っている」と明かすための伏線なので、さらっと流すのが正解です。読み上げも上の2文だけで十分。</p>
+        <div><h4 class="lbl">この2枚を出す理由</h4>
+          <p class="why">「どうせ lint で出るやつでしょ」という<strong>先回りの反論を潰す</strong>ため。ここで潰しておくと、あとの指摘がすべて効きます。</p>
         </div>
       </div>
     </div>
   </article>
 
   <!-- 06 -->
-  <article class="slide peak">
-    <div class="slide-head"><span class="num">06</span><h3>動かす</h3><span class="peak-tag">空気が変わる</span><span class="dur">35秒</span></div>
+  <article class="slide">
+    <div class="slide-head"><span class="num">06</span><h3>実装を見せる</h3><span class="dur">18秒</span></div>
     <div class="slide-body">
       <div class="col-left">
-        <div>
-          <h4 class="lbl">スライドに出す文字</h4>
-          <div class="screen">
-            <span class="big">エラーなし。終了コード 0</span>
-            <hr>
-            <span class="redline">粗利 36,800円</span>
-            <span class="sub">正しくは 8,000円</span>
-          </div>
+        <div><h4 class="lbl">スライドに出す文字</h4>
+          <div class="screen"><span class="big">集計しているのは、これだけ</span></div>
         </div>
-        <div>
-          <h4 class="lbl">貼る画像</h4>
-          <div class="slot">
-            <span class="fn">STEP4_go run確認.png</span>
-            <span class="place">配置：<b>中央大きく</b>。Keynote の図形で <b>「36800」の行に赤い枠線</b>を必ず追加</span>
-          </div>
+        <div><h4 class="lbl">貼る画像</h4>
+          <div class="slot"><span class="fn">STEP3_実装確認.png</span><span class="place">配置：<b>スライドいっぱい</b>。上下の余白（プロンプト行）は切り落とす</span></div>
         </div>
       </div>
       <div class="col-right">
-        <div>
-          <h4 class="lbl">話すこと</h4>
-          <div class="talk"><p>動かします。エラーは出ません。終了コードも 0 です。</p><p class="beat">【ここで一拍おく】</p><p>でも間違っています。正しい粗利は 8,000円。表示は 36,800円。4倍以上ずれています。支出をマイナスで持っているのに、さらに引き算していたので符号が反転していました。</p><p>こういうのが一番こわいと思っていて、<strong>落ちないので誰も気づかない。</strong></p></div>
+        <div><h4 class="lbl">話すこと</h4>
+          <div class="talk"><p>1行ずつ見て、売上なら売上に、それ以外は支出に足していく。最後に売上マイナス支出で粗利を出す。</p><p>ごく普通のコードに見えると思います。実際、私もそう思っていました。</p></div>
         </div>
-        <div>
-          <h4 class="lbl">この画像を出す理由</h4>
-          <p class="why">LT全体で<strong>いちばん重要な1枚</strong>。「動いてしまうバグ」を一目で見せられます。赤枠がないと数字が埋もれるので、装飾ではなく必須です。</p>
+        <div><h4 class="lbl">この画像を出す理由</h4>
+          <p class="why">聞き手にバグを探させる必要は<strong>ありません</strong>。次で「実は間違っている」と明かすための伏線なので、さらっと流すのが正解です。読み上げも上の2文だけ。</p>
         </div>
       </div>
     </div>
   </article>
 
   <!-- 07 -->
-  <article class="slide">
-    <div class="slide-head"><span class="num">07</span><h3>コマンドを打つ</h3><span class="dur">18秒</span></div>
+  <article class="slide peak">
+    <div class="slide-head"><span class="num">07</span><h3>動かす</h3><span class="tag peak">空気が変わる</span><span class="dur">33秒</span></div>
     <div class="slide-body">
       <div class="col-left">
-        <div>
-          <h4 class="lbl">スライドに出す文字</h4>
+        <div><h4 class="lbl">スライドに出す文字</h4>
           <div class="screen">
-            <span class="cmd">/code-review</span>
-            <span class="sub">待っている間、別の作業を頼める</span>
+            <span class="big">エラーなし。終了コード 0</span>
+            <hr>
+            <span class="redline">粗利 36,800円</span>
+            <span class="sub">正しくは 3,200円</span>
           </div>
         </div>
-        <div>
-          <h4 class="lbl">貼る画像（2枚を左右に）</h4>
-          <div class="slot">
-            <span class="fn">STEP5_1_:code-review実行前_medium.png</span>
-            <span class="place">配置：<b>左</b>。<b>上部の /model・/effort の履歴は必ずトリミング</b>し、コマンド候補が出ている部分だけを使う</span>
-          </div>
-          <div class="slot">
-            <span class="fn">STEP5_2_:code-review実行中_medium.png</span>
-            <span class="place">配置：<b>右</b>。裏で動いている様子</span>
-          </div>
+        <div><h4 class="lbl">貼る画像</h4>
+          <div class="slot"><span class="fn">STEP4_go run確認.png</span><span class="place">配置：<b>中央大きく</b>。Keynote の図形で <b>「36800」の行に赤い枠線</b>を必ず追加</span></div>
         </div>
       </div>
       <div class="col-right">
-        <div>
-          <h4 class="lbl">話すこと</h4>
-          <div class="talk"><p>ここでコマンドを打ちます。スラッシュを打つと候補が出るので選ぶだけ。このサイズなら1〜2分で返ってきます。</p><p>別プロセスで走るので、待っている間も別の作業を頼めます。</p></div>
+        <div><h4 class="lbl">話すこと</h4>
+          <div class="talk"><p>動かします。エラーは出ません。終了コードも 0 です。</p><p class="beat">【ここで一拍おく】</p><p>でも間違っています。実際に手元に残るのは 3,200円。表示は 36,800円です。支出をマイナスで持っているのに、さらに引き算していたので符号が反転していました。</p><p>こういうのが一番こわいと思っていて、<strong>落ちないので誰も気づかない。</strong></p></div>
         </div>
-        <div>
-          <h4 class="lbl">この2枚を出す理由</h4>
-          <p class="why">左は「<strong>本当にコマンド1つ</strong>」の証拠。右は「裏で何かが動いている」実感を出すため。サブエージェントの仕組みの説明には<strong>踏み込まないでください</strong> — 4分の枠では本題が薄まります。上の一言で止めるのが正解です。</p>
+        <div><h4 class="lbl">この画像を出す理由</h4>
+          <p class="why">LT全体で<strong>いちばん重要な1枚</strong>。「動いてしまうバグ」を一目で見せられます。赤枠がないと数字が埋もれるので、装飾ではなく必須です。</p>
         </div>
       </div>
     </div>
@@ -605,36 +540,25 @@
 
   <!-- 08 -->
   <article class="slide">
-    <div class="slide-head"><span class="num">08</span><h3>結果：5件</h3><span class="dur">28秒</span></div>
+    <div class="slide-head"><span class="num">08</span><h3>コマンドを打つ</h3><span class="dur">12秒</span></div>
     <div class="slide-body">
       <div class="col-left">
-        <div>
-          <h4 class="lbl">スライドに出す文字</h4>
+        <div><h4 class="lbl">スライドに出す文字</h4>
           <div class="screen">
-            <span class="big">指摘 5件</span>
-            <span class="sub">全件、実際にビルドして動かした上での指摘</span>
+            <span class="cmd">/code-review</span>
+            <span class="sub">待っている間、別の作業を頼める</span>
           </div>
         </div>
-        <div>
-          <h4 class="lbl">貼る画像（主 + 従）</h4>
-          <div class="slot">
-            <span class="fn">STEP6_2_:code-review実行結果_メイン_medium.png</span>
-            <span class="place">配置：<b>主役。大きく中央</b>。まとまった指摘一覧はこちら</span>
-          </div>
-          <div class="slot">
-            <span class="fn">STEP6_1_:code-review実行結果_サブエージェント_medium.png</span>
-            <span class="place">配置：<b>隅に小さく</b>（右下など）。読めなくてよい</span>
-          </div>
+        <div><h4 class="lbl">貼る画像</h4>
+          <div class="slot"><span class="fn">STEP5_2_:code-review実行中_medium.png</span><span class="place">配置：<b>中央</b>。<code>main</code> と <code>code-review</code> が並んでいる下部が見えるように</span></div>
         </div>
       </div>
       <div class="col-right">
-        <div>
-          <h4 class="lbl">話すこと</h4>
-          <div class="talk"><p>5件出ました。細かく読まなくて大丈夫です。さっきの符号バグはもちろん入っています。ファイル名と行番号つきで、「実際に動かすとこう出る、正しくはこう」まで書いてあります。</p><p>ここまでは、正直まあそうだろうなと思っていました。驚いたのはこの次です。</p></div>
+        <div><h4 class="lbl">話すこと</h4>
+          <div class="talk"><p>コマンドを打つと、裏で別プロセスとして走ります。待っている間も別の作業を頼めます。</p></div>
         </div>
-        <div>
-          <h4 class="lbl">2枚に分ける理由</h4>
-          <p class="why">メイン画面が<strong>結論</strong>、サブエージェント画面が<strong>作業量の証拠</strong>です。小さく添えるだけで「裏でこれだけ調べている」が伝わります。説明は不要。</p>
+        <div><h4 class="lbl">この画像を出す理由</h4>
+          <p class="why">「裏で何かが動いている」実感を出すため。<strong>サブエージェントの仕組みには踏み込まないでください</strong> — 5分の枠では本題が薄まります。上の一言で止めるのが正解です。</p>
         </div>
       </div>
     </div>
@@ -642,32 +566,30 @@
 
   <!-- 09 -->
   <article class="slide">
-    <div class="slide-head"><span class="num">09</span><h3>厳しさを上げる</h3><span class="dur">10秒</span></div>
+    <div class="slide-head"><span class="num">09</span><h3>medium の結果：3件 / 54秒</h3><span class="dur">28秒</span></div>
     <div class="slide-body">
       <div class="col-left">
-        <div>
-          <h4 class="lbl">スライドに出す文字</h4>
+        <div><h4 class="lbl">スライドに出す文字</h4>
           <div class="screen">
-            <span class="cmd">/code-review high</span>
-            <span class="sub">low / medium / high / max</span>
+            <span class="big">指摘 3件 / 54秒</span>
+            <ul>
+              <li>符号が二重反転して粗利が誤る</li>
+              <li>ゼロ除算で panic する</li>
+              <li><code>strconv.Atoi</code> のエラー握りつぶし</li>
+            </ul>
           </div>
         </div>
-        <div>
-          <h4 class="lbl">貼る画像</h4>
-          <div class="slot">
-            <span class="fn">STEP7_1_:code-review実行前_high.png</span>
-            <span class="place">配置：<b>中央</b>。入力した行が読めればよい</span>
-          </div>
+        <div><h4 class="lbl">貼る画像（主 + 従）</h4>
+          <div class="slot"><span class="fn">STEP6_2_:code-review実行結果_メイン_medium.png</span><span class="place">配置：<b>主役。大きく中央</b>。日本語でまとまった3件はこちら</span></div>
+          <div class="slot"><span class="fn">STEP6_1_:code-review実行結果_サブエージェント_medium.png</span><span class="place">配置：<b>隅に小さく</b>（右下など）。読めなくてよい</span></div>
         </div>
       </div>
       <div class="col-right">
-        <div>
-          <h4 class="lbl">話すこと</h4>
-          <div class="talk"><p>どれくらい厳しく見るかを指定できます。同じ差分に、今度は high で。</p></div>
+        <div><h4 class="lbl">話すこと</h4>
+          <div class="talk"><p>54秒で3件出ました。さっきの符号バグは1件目です。「2026-01のデータだと本来3200のところ36800と算出される」と、<strong>具体的な数字まで書いてあります。</strong></p><p>3件目を見てください。<code>CLAUDE.md</code> の「エラーは握りつぶさない」というルールに反する、と書いてあります。<strong>私がこのリポジトリに書いた決めごとです。</strong></p></div>
         </div>
-        <div>
-          <h4 class="lbl">この画像を出す理由</h4>
-          <p class="why">次の「8件」への<strong>つなぎ</strong>。ここは速く抜けてください。10秒で十分です。</p>
+        <div><h4 class="lbl">2枚に分ける理由</h4>
+          <p class="why">メイン画面が<strong>結論</strong>、サブエージェント画面が<strong>作業量の証拠</strong>です。小さく添えるだけで「裏でこれだけ調べている」が伝わります。説明は不要。</p>
         </div>
       </div>
     </div>
@@ -675,44 +597,62 @@
 
   <!-- 10 -->
   <article class="slide">
-    <div class="slide-head"><span class="num">10</span><h3>結果：8件</h3><span class="dur">25秒</span></div>
+    <div class="slide-head"><span class="num">10</span><h3>厳しさを上げる</h3><span class="dur">8秒</span></div>
     <div class="slide-body">
       <div class="col-left">
-        <div>
-          <h4 class="lbl">スライドに出す文字</h4>
+        <div><h4 class="lbl">スライドに出す文字</h4>
           <div class="screen">
-            <span class="big">指摘 8件</span>
-            <span class="sub">medium の5件 <span class="redline">＋3件</span></span>
+            <span class="cmd">/code-review high</span>
+            <span class="sub">low / medium / high / max</span>
           </div>
         </div>
-        <div>
-          <h4 class="lbl">貼る画像</h4>
-          <div class="slot">
-            <span class="fn">STEP7_4_:code-review実行結果_メイン_high.png</span>
-            <span class="place">配置：<b>大きく中央</b>。件数が伝わればよい</span>
-          </div>
+        <div><h4 class="lbl">貼る画像</h4>
+          <div class="slot"><span class="fn">STEP7_1_:code-review実行前_high.png</span><span class="place">配置：<b>中央</b>。入力した行が読めればよい</span></div>
         </div>
       </div>
       <div class="col-right">
-        <div>
-          <h4 class="lbl">話すこと</h4>
-          <div class="talk"><p>8件に増えました。3件増えたわけですが、その増えた中にこれがありました。</p></div>
+        <div><h4 class="lbl">話すこと</h4>
+          <div class="talk"><p>どれくらい厳しく見るかを指定できます。同じ差分に、今度は high で。</p></div>
         </div>
-        <div>
-          <h4 class="lbl">この画像を出す理由</h4>
-          <p class="why">「増えた」という<strong>事実だけ</strong>を見せる枚です。中身は次のスライドで拡大するので、ここでは読ませません。</p>
+        <div><h4 class="lbl">この画像を出す理由</h4>
+          <p class="why">次への<strong>つなぎ</strong>。ここは速く抜けてください。8秒で十分です。</p>
         </div>
       </div>
     </div>
   </article>
 
   <!-- 11 -->
-  <article class="slide peak">
-    <div class="slide-head"><span class="num">11</span><h3>README のルールに違反している</h3><span class="peak-tag">山場</span><span class="dur">45秒</span></div>
+  <article class="slide">
+    <div class="slide-head"><span class="num">11</span><h3>high の結果</h3><span class="dur">20秒</span></div>
     <div class="slide-body">
       <div class="col-left">
-        <div>
-          <h4 class="lbl">スライドに出す文字</h4>
+        <div><h4 class="lbl">スライドに出す文字</h4>
+          <div class="screen">
+            <span class="big">指摘 <span class="todo-inline">○件</span> / <span class="todo-inline">○秒</span></span>
+            <span class="sub">medium の3件 <span class="redline">＋ 増えたぶん</span></span>
+          </div>
+        </div>
+        <div><h4 class="lbl">貼る画像</h4>
+          <div class="slot"><span class="fn">STEP7_4_:code-review実行結果_メイン_high.png</span><span class="place">配置：<b>大きく中央</b>。件数が伝わればよい</span></div>
+        </div>
+      </div>
+      <div class="col-right">
+        <div><h4 class="lbl">話すこと</h4>
+          <div class="talk"><p>件数が増えました。増えた中にこれがありました、と言って次へ。</p></div>
+        </div>
+        <div><h4 class="lbl">この画像を出す理由</h4>
+          <p class="why">「増えた」という<strong>事実だけ</strong>を見せる枚です。中身は次で拡大するので、ここでは読ませません。<span class="todo-inline">要確認</span> の2箇所は <code>STEP7_4</code> の画面から数字を読んで埋めてください。</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 12 -->
+  <article class="slide peak">
+    <div class="slide-head"><span class="num">12</span><h3>決めごとと突き合わせている</h3><span class="tag peak">山場</span><span class="dur">45秒</span></div>
+    <div class="slide-body">
+      <div class="col-left">
+        <div><h4 class="lbl">スライドに出す文字</h4>
           <div class="screen">
             <span class="big">「README のルールに違反している」</span>
             <hr>
@@ -720,38 +660,57 @@
             <span class="sub">利益分配は原価ではなく、粗利から払う</span>
           </div>
         </div>
-        <div>
-          <h4 class="lbl">貼る画像（2枚を上下に）</h4>
-          <div class="slot">
-            <span class="fn">STEP7_2_:code-review実行結果_サブエージェント_high.png</span>
-            <span class="place">配置：<b>該当の指摘だけを切り出して、大きく</b>。このLTで<b>唯一、文字を読ませる画像</b></span>
-          </div>
-          <div class="slot">
-            <span class="fn">STEP7_3_:code-review実行結果2_サブエージェント_high.png</span>
-            <span class="place">配置：<b>下に小さく</b>、または総括の一文だけを切り出して添える</span>
-          </div>
+        <div><h4 class="lbl">貼る画像（2枚を上下に）</h4>
+          <div class="slot"><span class="fn">STEP7_2_:code-review実行結果_サブエージェント_high.png</span><span class="place">配置：<b>該当の指摘だけを切り出して、大きく</b>。このLTで<b>唯一、文字を読ませる画像</b></span></div>
+          <div class="slot"><span class="fn">STEP7_3_:code-review実行結果2_サブエージェント_high.png</span><span class="place">配置：<b>下に小さく</b>、または総括の一文だけを切り出して添える</span></div>
         </div>
       </div>
       <div class="col-right">
-        <div>
-          <h4 class="lbl">話すこと</h4>
-          <div class="talk"><p>このリポジトリの README には、会計上の決めごとが書いてあります。「粗利は売上マイナス原価」「利益分配は原価ではなく、粗利の中から払う」。</p><p class="beat">【ここで一拍おく】</p><p><strong>コードではなく、README です。</strong></p><p>実装はこれを守っておらず、分配を原価として引いていました。Claude はその README を読んだ上で、「この2つは README に書かれたルールへの違反だ」と指摘してきました。</p><p>文法チェックでも、よくあるバグパターンの検出でもないですよね。リポジトリの中の決めごとを読んで、それと突き合わせている。ここまでやるとは思っていませんでした。</p></div>
+        <div><h4 class="lbl">話すこと</h4>
+          <div class="talk"><p>このリポジトリの README には、会計上の決めごとが書いてあります。「粗利は売上マイナス原価」「利益分配は原価ではなく、粗利の中から払う」。</p><p class="beat">【ここで一拍おく】</p><p><strong>コードではなく、README です。</strong></p><p>実装はこれを守っておらず、分配を原価として引いていました。Claude はその README を読んだ上で、「これは README に書かれたルールへの違反だ」と指摘してきました。</p><p>文法チェックでも、よくあるバグパターンの検出でもないですよね。<strong>リポジトリの中の決めごとを読んで、それと突き合わせている。</strong>ここまでやるとは思っていませんでした。</p></div>
         </div>
-        <div>
-          <h4 class="lbl">この画像を出す理由</h4>
-          <p class="why">LTの<strong>結論そのもの</strong>。ここだけは投影して、会場の一番うしろから文字が読めるか必ず確認してください。読めないなら、指摘部分を切り出して拡大するか、テキストで打ち直します。</p>
+        <div><h4 class="lbl">この画像を出す理由</h4>
+          <p class="why">LTの<strong>結論そのもの</strong>。投影して、会場の一番うしろから文字が読めるか必ず確認してください。読めないなら、指摘部分を切り出して拡大するか、テキストで打ち直します。</p>
         </div>
       </div>
     </div>
   </article>
 
-  <!-- 12 -->
-  <article class="slide">
-    <div class="slide-head"><span class="num">12</span><h3>使い方</h3><span class="dur">22秒</span></div>
+  <!-- 13 -->
+  <article class="slide fresh">
+    <div class="slide-head"><span class="num">13</span><h3>medium と high の違い</h3><span class="tag new">比較</span><span class="dur">25秒</span></div>
     <div class="slide-body">
       <div class="col-left">
-        <div>
-          <h4 class="lbl">スライドに出す文字</h4>
+        <div><h4 class="lbl">スライドに出す文字（表で1枚）</h4>
+          <div class="screen">
+            <dl>
+              <dt>&nbsp;</dt><dd><strong>medium / high</strong></dd>
+              <dt>時間</dt><dd>54秒 / <span class="todo-inline">○秒</span></dd>
+              <dt>件数</dt><dd>3件 / <span class="todo-inline">○件</span></dd>
+              <dt>探し方</dt><dd>手作業で検証 / 8観点を展開</dd>
+              <dt>向く場面</dt><dd>日常 / 重要な差分</dd>
+            </dl>
+          </div>
+        </div>
+        <div><h4 class="lbl">貼る画像</h4><div class="noimg">画像なし（表だけ）</div></div>
+      </div>
+      <div class="col-right">
+        <div><h4 class="lbl">話すこと</h4>
+          <div class="talk"><p>2つの違いです。時間は54秒に対して<span class="todo-inline">○秒</span>、件数は3件に対して<span class="todo-inline">○件</span>。</p><p>面白いのが<strong>探し方が変わる</strong>ところです。medium のときは「差分が小さいので、8方向のエージェント群は立てずに手作業で確認した」と書いてありました。high では「8つの観点でエージェントを展開して候補を出し、重大なものは実際にビルドして動かして確かめた」と。</p><p>普段は引数なし、リリース前や大きめの差分だけ high、くらいの使い分けでいいと思います。</p></div>
+        </div>
+        <div><h4 class="lbl">この内容の出どころ</h4>
+          <p class="why">推測ではなく、<strong>サブエージェントの画面にそう書いてあります</strong>（<code>STEP6_1</code> と <code>STEP7_3</code>）。時間があれば該当箇所を切り出して添えると説得力が出ますが、なくても口頭で十分伝わります。</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 14 -->
+  <article class="slide">
+    <div class="slide-head"><span class="num">14</span><h3>使い方</h3><span class="dur">18秒</span></div>
+    <div class="slide-body">
+      <div class="col-left">
+        <div><h4 class="lbl">スライドに出す文字</h4>
           <div class="screen">
             <ul>
               <li><code>/code-review</code> — 引数なしでOK</li>
@@ -761,45 +720,35 @@
             </ul>
           </div>
         </div>
-        <div>
-          <h4 class="lbl">貼る画像</h4>
-          <div class="noimg">画像なし（文字だけ・4行）</div>
-        </div>
+        <div><h4 class="lbl">貼る画像</h4><div class="noimg">画像なし（文字だけ・4行）</div></div>
       </div>
       <div class="col-right">
-        <div>
-          <h4 class="lbl">話すこと</h4>
-          <div class="talk"><p>使い方です。基本は引数なしでいいです。物足りなければ high や max。今回は medium から high で3件増えました。<code>--fix</code> を付けると指摘するだけでなくその場で直します。<code>--comment</code> を付けると GitHub のPRに行ごとのコメントとして投稿してくれます。</p><p>ちなみに今回は8件出ましたが、<strong>毎回この精度が出るとは限りません。</strong>差分は自分でも見ます。</p></div>
+        <div><h4 class="lbl">話すこと</h4>
+          <div class="talk"><p>基本は引数なしでいいです。<code>--fix</code> を付けると指摘するだけでなくその場で直します。<code>--comment</code> を付けると GitHub のPRに行ごとのコメントとして投稿してくれます。</p><p>ひとつだけ。今回はうまく当たりましたが、<strong>毎回この精度が出るとは限りません。</strong>差分は自分でも見ます。</p></div>
         </div>
-        <div>
-          <h4 class="lbl">最後の一言を入れる理由</h4>
+        <div><h4 class="lbl">最後の一言を入れる理由</h4>
           <p class="why">質疑で<strong>ほぼ確実に聞かれます</strong>。先に自分から言っておくと、誠実に見えるうえに質疑が短くなります。</p>
         </div>
       </div>
     </div>
   </article>
 
-  <!-- 13 -->
+  <!-- 15 -->
   <article class="slide">
-    <div class="slide-head"><span class="num">13</span><h3>まとめ</h3><span class="dur">15秒</span></div>
+    <div class="slide-head"><span class="num">15</span><h3>まとめ</h3><span class="dur">12秒</span></div>
     <div class="slide-body">
       <div class="col-left">
-        <div>
-          <h4 class="lbl">スライドに出す文字</h4>
+        <div><h4 class="lbl">スライドに出す文字</h4>
           <div class="screen">
             <span class="big">人に出す前に、1回だけ。</span>
             <hr>
             <span class="cmd">/code-review</span>
           </div>
         </div>
-        <div>
-          <h4 class="lbl">貼る画像</h4>
-          <div class="noimg">画像なし（01と対にする）</div>
-        </div>
+        <div><h4 class="lbl">貼る画像</h4><div class="noimg">画像なし（01と対にする）</div></div>
       </div>
       <div class="col-right">
-        <div>
-          <h4 class="lbl">話すこと</h4>
+        <div><h4 class="lbl">話すこと</h4>
           <div class="talk"><p>まとめます。人にレビューを出す前に1回だけ通してみてください。恥ずかしい指摘を人に見せずに済みますし、レビュアーの負担も減ります。打つコマンドは1つだけです。以上です、ありがとうございました。</p></div>
         </div>
       </div>
@@ -808,59 +757,106 @@
 
 </div>
 
+<h2 class="sec">medium と high — 実測の比較</h2>
+
+<div class="scroll">
+<table>
+  <thead><tr><th></th><th>medium（引数なし）</th><th>high</th></tr></thead>
+  <tbody>
+    <tr><td><strong>実行時間</strong></td><td class="n">54秒</td><td class="n"><span class="todo-inline">要確認</span></td></tr>
+    <tr><td><strong>指摘件数</strong></td><td class="n">3件</td><td class="n"><span class="todo-inline">要確認</span></td></tr>
+    <tr>
+      <td><strong>探し方</strong></td>
+      <td>差分が小さいと判断し、<strong>8方向のエージェント群を立てずに手作業で検証</strong>（画面に明記）</td>
+      <td><strong>8つの観点でエージェントを展開</strong>して候補を出し、重大なものは実際にビルド・実行して検証（画面に明記）</td>
+    </tr>
+    <tr>
+      <td><strong>拾ったもの</strong></td>
+      <td>符号の二重反転 ／ ゼロ除算 panic ／ <code>Atoi</code> のエラー握りつぶし</td>
+      <td>上記に加えて、<code>share</code>（分配）を原価に混ぜている点など</td>
+    </tr>
+    <tr>
+      <td><strong>決めごとの参照</strong></td>
+      <td><code>CLAUDE.md</code> の「エラーは握りつぶさない」ルールを引用</td>
+      <td><code>README.md</code> の会計ルール（粗利の定義・分配の扱い）を引用</td>
+    </tr>
+    <tr>
+      <td><strong>向く場面</strong></td>
+      <td>日常のレビュー前チェック。まずこれで十分</td>
+      <td>リリース前、大きめの差分、お金や権限を扱う箇所</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="callout" style="margin-top:20px">
+  <h4>質疑で聞かれたら</h4>
+  <p><strong>「毎回同じ結果が出る？」</strong> — 出ません。同じ差分でも実行のたびに件数は変わります。実際、この差分を別の条件で流したときは medium で5件、high で8件でした。<strong>「当たり外れはあるが、出してくれるものは実際に動かして裏を取っている」</strong>という答え方が正確です。</p>
+</div>
+
 <h2 class="sec">時間配分</h2>
 
 <div class="scroll">
 <table>
   <thead><tr><th>#</th><th>内容</th><th>秒</th><th>累計</th></tr></thead>
   <tbody>
-    <tr><td class="n">01</td><td>タイトル</td><td class="n">12</td><td class="n">0:12</td></tr>
-    <tr><td class="n">02</td><td>つかみ</td><td class="n">18</td><td class="n">0:30</td></tr>
-    <tr><td class="n">03</td><td>結論</td><td class="n">15</td><td class="n">0:45</td></tr>
-    <tr><td class="n">04</td><td>題材</td><td class="n">22</td><td class="n">1:07</td></tr>
-    <tr><td class="n">05</td><td>実装</td><td class="n">20</td><td class="n">1:27</td></tr>
-    <tr class="peak-row"><td class="n">06</td><td>動かす</td><td class="n">35</td><td class="n">2:02</td></tr>
-    <tr><td class="n">07</td><td>コマンドを打つ</td><td class="n">18</td><td class="n">2:20</td></tr>
-    <tr><td class="n">08</td><td>結果 5件</td><td class="n">28</td><td class="n">2:48</td></tr>
-    <tr><td class="n">09</td><td>厳しさを上げる</td><td class="n">10</td><td class="n">2:58</td></tr>
-    <tr><td class="n">10</td><td>結果 8件</td><td class="n">25</td><td class="n">3:23</td></tr>
-    <tr class="peak-row"><td class="n">11</td><td>山場</td><td class="n">45</td><td class="n">4:08</td></tr>
-    <tr><td class="n">12</td><td>使い方</td><td class="n">22</td><td class="n">4:30</td></tr>
-    <tr class="total"><td class="n">13</td><td>まとめ</td><td class="n">15</td><td class="n">4:45</td></tr>
+    <tr><td class="n">01</td><td>タイトル</td><td class="n">10</td><td class="n">0:10</td></tr>
+    <tr><td class="n">02</td><td>つかみ</td><td class="n">15</td><td class="n">0:25</td></tr>
+    <tr><td class="n">03</td><td>結論</td><td class="n">12</td><td class="n">0:37</td></tr>
+    <tr><td class="n">04</td><td>今日の前提</td><td class="n">20</td><td class="n">0:57</td></tr>
+    <tr><td class="n">05</td><td>題材</td><td class="n">20</td><td class="n">1:17</td></tr>
+    <tr><td class="n">06</td><td>実装</td><td class="n">18</td><td class="n">1:35</td></tr>
+    <tr class="peak-row"><td class="n">07</td><td>動かす</td><td class="n">33</td><td class="n">2:08</td></tr>
+    <tr><td class="n">08</td><td>コマンドを打つ</td><td class="n">12</td><td class="n">2:20</td></tr>
+    <tr><td class="n">09</td><td>medium 3件</td><td class="n">28</td><td class="n">2:48</td></tr>
+    <tr><td class="n">10</td><td>厳しさを上げる</td><td class="n">8</td><td class="n">2:56</td></tr>
+    <tr><td class="n">11</td><td>high の結果</td><td class="n">20</td><td class="n">3:16</td></tr>
+    <tr class="peak-row"><td class="n">12</td><td>山場</td><td class="n">45</td><td class="n">4:01</td></tr>
+    <tr><td class="n">13</td><td>medium と high の違い</td><td class="n">25</td><td class="n">4:26</td></tr>
+    <tr><td class="n">14</td><td>使い方</td><td class="n">18</td><td class="n">4:44</td></tr>
+    <tr class="total"><td class="n">15</td><td>まとめ</td><td class="n">12</td><td class="n">4:56</td></tr>
   </tbody>
 </table>
+</div>
+
+<div class="callout" style="margin-top:20px">
+  <h4>5分枠のギリギリです</h4>
+  <p>4分56秒は、緊張して早口になるぶんを差し引いてもかなり攻めた配分です。<strong>必ず一度、時計を見ながら通しで声に出して読んでください。</strong>超えるようなら下の順で削ります。</p>
 </div>
 
 <h2 class="sec">4分に収めたいとき — 削る順番</h2>
 
 <ol class="trim">
-  <li><strong>09（厳しさを上げる）を10に統合</strong> → −10秒。10のスライドに <code>/code-review high</code> と併記すれば足ります</li>
-  <li><strong>07 の右側（実行中の画像）を落とす</strong> → −8秒。左のコマンド候補だけで通じます</li>
-  <li><strong>12 の使い方を <code>--fix</code> の1行だけに</strong> → −12秒</li>
-  <li><strong>02 のつかみを1文に</strong> → −8秒</li>
-  <li><strong>04 の説明を「130行のPR。buildもvetも通る」の一言で流す</strong> → −8秒</li>
+  <li><strong>10（厳しさを上げる）を 11 に統合</strong> → −8秒。11のスライドに <code>/code-review high</code> と併記すれば足ります</li>
+  <li><strong>14 の使い方を <code>--fix</code> の1行だけに</strong> → −10秒</li>
+  <li><strong>02 のつかみを1文に</strong> → −7秒</li>
+  <li><strong>05 の説明を「130行のPR。buildもvetも通る」の一言で流す</strong> → −8秒</li>
+  <li><strong>13 の比較を「時間と件数」だけにして、探し方の話を落とす</strong> → −12秒</li>
+  <li><strong>08（コマンドを打つ）を落とす</strong> → −12秒。03 と内容が重なります</li>
 </ol>
 
 <div class="callout" style="margin-top:20px">
-  <h4>06 と 11 は削らない</h4>
-  <p>「動いてしまうバグ」と「README のルール違反」。この2枚がこのLTの中身です。ほかを全部削ってでも、この2枚には時間を残してください。</p>
+  <h4>04・07・12 は削らない</h4>
+  <p><strong>04（前提）</strong>は質疑を封じるため、<strong>07（動いてしまうバグ）</strong>と<strong>12（決めごととの突き合わせ）</strong>はLTの中身そのものです。ほかを全部削ってでも、この3枚には時間を残してください。</p>
 </div>
 
 <h2 class="sec">発表前チェックリスト</h2>
 
 <ul class="check">
   <li>キャプチャ12枚を全部貼った</li>
-  <li><strong>STEP5_1 の上部（/model・/effort の履歴）をトリミングした</strong></li>
-  <li>06 の「36800」に赤枠を付けた</li>
-  <li>実際に投影して、<strong>会場の一番うしろから 11 の文字が読める</strong>ことを確認した</li>
-  <li>通しで1回声に出して読み、4分30秒前後に収まった</li>
+  <li><strong><code>STEP7_4</code> を見て、high の件数と実行時間（<span class="todo-inline">要確認</span> の4箇所）を埋めた</strong></li>
+  <li>07 の「36800」に赤枠を付けた</li>
+  <li>04 で <code>/model</code>・<code>/effort</code> が読める大きさになっている</li>
+  <li>実際に投影して、<strong>会場の一番うしろから 12 の文字が読める</strong>ことを確認した</li>
+  <li>時計を見ながら通しで1回読み、5分を超えなかった</li>
   <li>キャプチャに他の作業画面・APIキー・個人情報が映り込んでいない</li>
   <li>質疑用に「毎回この精度が出るとは限らない」と言う準備をした</li>
 </ul>
 
 <footer class="page">
   リポジトリ <code>shokawakita/claude-review-demo</code> ／ デモ差分は <code>feature/monthly-summary</code>。
-  指摘の全文は <code>docs/lt/review-result.md</code>、再現手順は <code>docs/lt/demo-steps.md</code>。
+  再現手順は <code>docs/lt/demo-steps.md</code>。
+  件数・実行時間は Claude Sonnet 5 / effort medium / Claude Code v2.1.251 での実測値。
 </footer>
 
 </div>
